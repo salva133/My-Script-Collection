@@ -3,6 +3,7 @@ import requests
 import os
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+import time
 
 def find_broken_images(url):
     broken_images = []
@@ -16,7 +17,7 @@ def find_broken_images(url):
 
         for img in images:
             img_url = img.get('src')
-            if not img_url or img_url.startswith('data:'):
+            if not img_url or img_url.startswith('data:') or 'fallback' not in img_url:
                 continue
 
             full_url = urljoin(url, img_url)
@@ -63,13 +64,13 @@ def ensure_directory_exists(file_path):
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-def write_to_file(file_path, broken_images):
+def write_to_file(file_path, page_url, broken_images):
     """
-    Schreibt die kaputten Bild-URLs in eine Datei.
+    Schreibt die kaputten Bild-URLs und die Seiten-URLs, auf denen sie gefunden wurden, in eine Datei.
     """
     with open(file_path, 'a') as file:
         for img in broken_images:
-            file.write(img + '\n')
+            file.write(f"{page_url} -> {img}\n")
 
 # Sitemap-URL
 sitemap_url = 'https://www.digestio.de/sitemap.xml'
@@ -85,6 +86,8 @@ results_distinct_file = 'results_distinct.txt'
 results_distinct_path = os.path.join(results_dir, results_distinct_file)
 
 try:
+    start_time = time.time()  # Start der Zeitmessung
+
     # Stelle sicher, dass das Verzeichnis existiert
     ensure_directory_exists(results_path)
     print("Verzeichnis für Ergebnisse überprüft und bereit.")
@@ -100,9 +103,10 @@ try:
         broken_images = find_broken_images(page)
         if broken_images:
             print(f"Gefundene kaputte Bilder: {len(broken_images)}")
-            write_to_file(results_path, broken_images)
+            write_to_file(results_path, page, broken_images)
         else:
             print("Keine kaputten Bilder gefunden.")
+
 
     # Einzigartige Ergebnisse verarbeiten und in einer neuen Datei speichern
     with open(results_path, 'r') as file:
@@ -112,6 +116,10 @@ try:
         file.writelines(unique_images)
     
     print(f"Einzigartige kaputte Bilder wurden in {results_distinct_path} gespeichert.")
+
+    end_time = time.time()  # Ende der Zeitmessung
+    total_time = end_time - start_time
+    print(f"Laufzeit des Programms: {total_time:.2f} Sekunden")
 
 except KeyboardInterrupt:
     print("Skript wurde manuell unterbrochen.")
