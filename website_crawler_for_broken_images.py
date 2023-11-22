@@ -1,12 +1,10 @@
 import xml.etree.ElementTree as ET
 import requests
+import os
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
 def find_broken_images(url):
-    """
-    Diese Funktion sucht nach kaputten Bildern auf der angegebenen URL.
-    """
     broken_images = []
 
     try:
@@ -18,13 +16,17 @@ def find_broken_images(url):
 
         for img in images:
             img_url = img.get('src')
-            if not img_url:
+            if not img_url or img_url.startswith('data:'):
                 continue
 
             full_url = urljoin(url, img_url)
-            img_response = requests.head(full_url)
-            if img_response.status_code != 200:
-                broken_images.append(full_url)
+            try:
+                img_response = requests.head(full_url)
+                if img_response.status_code != 200:
+                    broken_images.append(full_url)
+            except requests.RequestException:
+                # Fehler bei der Verarbeitung der URL
+                print(f"Fehler beim Überprüfen des Bildes: {full_url}")
 
     except requests.RequestException as e:
         print(f"Ein Fehler ist aufgetreten beim Abrufen der URL {url}: {e}")
@@ -52,18 +54,66 @@ def get_urls_from_sitemap(sitemap_url):
 
     return urls
 
+def ensure_directory_exists(file_path):
+    """
+    Stellt sicher, dass das Verzeichnis für die angegebene Datei existiert.
+    Erstellt das Verzeichnis, falls es nicht existiert.
+    """
+    directory = os.path.dirname(file_path)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+def write_to_file(file_path, broken_images):
+    """
+    Schreibt die kaputten Bild-URLs in eine Datei.
+    """
+    with open(file_path, 'a') as file:
+        for img in broken_images:
+            file.write(img + '\n')
+
 # Sitemap-URL
 sitemap_url = 'https://www.digestio.de/sitemap.xml'
 
-# URLs aus der Sitemap extrahieren
-all_pages = get_urls_from_sitemap(sitemap_url)
+# Verzeichnispfad für die Ergebnisse auf der gleichen Ebene wie das Skript
+script_dir = os.path.dirname(__file__)
+results_dir = os.path.join(script_dir, 'findings')
+results_file = 'results.txt'
+results_path = os.path.join(results_dir, results_file)
 
-# Überprüfen aller Seiten auf kaputte Bilder
-for page in all_pages:
-    broken_images = find_broken_images(page)
-    if broken_images:
-        print(f"Kaputte Bilder auf {page}:")
-        for img in broken_images:
-            print(img)
-    else:
-        print(f"Keine kaputten Bilder auf {page}.")
+# Neuer Dateipfad für distinct Ergebnisse
+results_distinct_file = 'results_distinct.txt'
+results_distinct_path = os.path.join(results_dir, results_distinct_file)
+
+try:
+    # Stelle sicher, dass das Verzeichnis existiert
+    ensure_directory_exists(results_path)
+    print("Verzeichnis für Ergebnisse überprüft und bereit.")
+
+    # URLs aus der Sitemap extrahieren
+    print(f"Lade Sitemap von {sitemap_url}...")
+    all_pages = get_urls_from_sitemap(sitemap_url)
+    print(f"Anzahl gefundener Seiten in der Sitemap: {len(all_pages)}")
+
+    # Überprüfen aller Seiten auf kaputte Bilder und in Datei schreiben
+    for page in all_pages:
+        print(f"Überprüfe {page} auf kaputte Bilder...")
+        broken_images = find_broken_images(page)
+        if broken_images:
+            print(f"Gefundene kaputte Bilder: {len(broken_images)}")
+            write_to_file(results_path, broken_images)
+        else:
+            print("Keine kaputten Bilder gefunden.")
+
+    # Einzigartige Ergebnisse verarbeiten und in einer neuen Datei speichern
+    with open(results_path, 'r') as file:
+        unique_images = set(file.readlines())
+
+    with open(results_distinct_path, 'w') as file:
+        file.writelines(unique_images)
+    
+    print(f"Einzigartige kaputte Bilder wurden in {results_distinct_path} gespeichert.")
+
+except KeyboardInterrupt:
+    print("Skript wurde manuell unterbrochen.")
+except Exception as e:
+    print(f"Ein unerwarteter Fehler ist aufgetreten: {e}")
