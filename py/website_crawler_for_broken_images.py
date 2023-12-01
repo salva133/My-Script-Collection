@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import time
 
+
 def find_broken_images(url):
     broken_images = []
 
@@ -12,12 +13,12 @@ def find_broken_images(url):
         response = requests.get(url)
         response.raise_for_status()
 
-        soup = BeautifulSoup(response.text, 'html.parser')
-        images = soup.find_all('img')
+        soup = BeautifulSoup(response.text, "html.parser")
+        images = soup.find_all("img")
 
         for img in images:
-            img_url = img.get('src')
-            if not img_url or img_url.startswith('data:') or 'fallback' not in img_url:
+            img_url = img.get("src")
+            if not img_url or img_url.startswith("data:") or "fallback" not in img_url:
                 continue
 
             full_url = urljoin(url, img_url)
@@ -34,6 +35,7 @@ def find_broken_images(url):
 
     return broken_images
 
+
 def get_urls_from_sitemap(sitemap_url):
     """
     Diese Funktion lädt die Sitemap und extrahiert alle URLs.
@@ -46,14 +48,17 @@ def get_urls_from_sitemap(sitemap_url):
 
         sitemap = ET.fromstring(response.content)
 
-        for url in sitemap.findall('.//{http://www.sitemaps.org/schemas/sitemap/0.9}url'):
-            loc = url.find('{http://www.sitemaps.org/schemas/sitemap/0.9}loc').text
+        for url in sitemap.findall(
+            ".//{http://www.sitemaps.org/schemas/sitemap/0.9}url"
+        ):
+            loc = url.find("{http://www.sitemaps.org/schemas/sitemap/0.9}loc").text
             urls.add(loc)
 
     except requests.RequestException as e:
         print(f"Ein Fehler ist aufgetreten beim Abrufen der Sitemap: {e}")
 
     return urls
+
 
 def ensure_directory_exists(file_path):
     """
@@ -64,25 +69,27 @@ def ensure_directory_exists(file_path):
     if not os.path.exists(directory):
         os.makedirs(directory)
 
+
 def write_to_file(file_path, page_url, broken_images):
     """
     Schreibt die kaputten Bild-URLs und die Seiten-URLs, auf denen sie gefunden wurden, in eine Datei.
     """
-    with open(file_path, 'a') as file:
+    with open(file_path, "a") as file:
         for img in broken_images:
             file.write(f"{page_url} -> {img}\n")
 
+
 # Sitemap-URL
-sitemap_url = 'https://www.digestio.de/sitemap.xml'
+sitemap_url = "https://www.digestio.de/sitemap.xml"
 
 # Verzeichnispfad für die Ergebnisse auf der gleichen Ebene wie das Skript
 script_dir = os.path.dirname(__file__)
-results_dir = os.path.join(script_dir, 'findings')
-results_file = 'results.txt'
+results_dir = os.path.join(script_dir, "findings")
+results_file = "results.txt"
 results_path = os.path.join(results_dir, results_file)
 
 # Neuer Dateipfad für distinct Ergebnisse
-results_distinct_file = 'results_distinct.txt'
+results_distinct_file = "results_distinct.txt"
 results_distinct_path = os.path.join(results_dir, results_distinct_file)
 
 try:
@@ -107,14 +114,13 @@ try:
         else:
             print("Keine kaputten Bilder gefunden.")
 
-
     # Einzigartige Ergebnisse verarbeiten und in einer neuen Datei speichern
-    with open(results_path, 'r') as file:
+    with open(results_path, "r") as file:
         unique_images = set(file.readlines())
 
-    with open(results_distinct_path, 'w') as file:
+    with open(results_distinct_path, "w") as file:
         file.writelines(unique_images)
-    
+
     print(f"Einzigartige kaputte Bilder wurden in {results_distinct_path} gespeichert.")
 
     end_time = time.time()  # Ende der Zeitmessung

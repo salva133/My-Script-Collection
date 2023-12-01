@@ -7,8 +7,10 @@ DATA_SRC_COLOR = "blue"
 DATA_DST_COLOR = "red"
 MISC_COLOR = "green"
 
+
 def run_script(script_name):
     subprocess.run([script_name])
+
 
 def get_bg_color(column):
     if column == "Data SRC":
@@ -18,18 +20,21 @@ def get_bg_color(column):
     else:
         return MISC_COLOR
 
+
 def create_frame(root, column, idx):
     frame = tk.Frame(root)
     frame.configure(bg=get_bg_color(column))
     frame.grid(row=1, column=idx, sticky="n")
     return frame
 
+
 def create_buttons(frame, column):
     for i, script in enumerate(sorted(columns[column]), 1):
         label = script.split(")")[1].split(".bat")[0]
         button = tk.Button(frame, text=label, command=lambda s=script: run_script(s))
-        button.configure(wraplength=200, width=30, bg='black', fg='white')
+        button.configure(wraplength=200, width=30, bg="black", fg="white")
         button.grid(row=i, column=0, pady=2, padx=2)
+
 
 root = tk.Tk()
 root.title("DFL GUI - " + os.path.basename(os.getcwd()))

@@ -4,17 +4,31 @@ import subprocess
 
 DEBUG = False
 
+
 def get_video_files(cwd):
     """Get a list of all video files in the specified directory."""
     video_extensions = (
-        ".mp4", ".mov", ".mkv", ".webm", ".avi", ".flv", ".wmv",
-        ".mpeg", ".mpg", ".m4v", ".3gp", ".3g2", ".ogv", ".vob"
+        ".mp4",
+        ".mov",
+        ".mkv",
+        ".webm",
+        ".avi",
+        ".flv",
+        ".wmv",
+        ".mpeg",
+        ".mpg",
+        ".m4v",
+        ".3gp",
+        ".3g2",
+        ".ogv",
+        ".vob",
     )
     files = [f for f in os.listdir(cwd) if f.endswith(video_extensions)]
-    files = [f for f in files if not f.startswith('data_')]
+    files = [f for f in files if not f.startswith("data_")]
     if DEBUG:
         print(f"Video files to be processed: {files}")
     return files
+
 
 def create_data_src_folder():
     """Create the "data_src" folder if it doesn't already exist."""
@@ -23,24 +37,49 @@ def create_data_src_folder():
         if DEBUG:
             print("Created 'data_src' directory.")
 
+
 def get_user_input():
     """Get the user input for the frame rate."""
-    frames_per_second = input("What every Nth frame of a second should be extracted? Press Enter to extract all frames: ")
+    frames_per_second = input(
+        "What every Nth frame of a second should be extracted? Press Enter to extract all frames: "
+    )
     return frames_per_second if frames_per_second else None
+
 
 def extract_frames(video, frames_per_second):
     """Extract frames from a video file using OpenCV and FFmpeg."""
     try:
         cap = cv2.VideoCapture(video)
         if frames_per_second:
-            subprocess.run(["ffmpeg", "-i", video, "-r", str(frames_per_second), "-q:v", "0", f"data_src/{os.path.splitext(video)[0]}_%05d.jpg"])
+            subprocess.run(
+                [
+                    "ffmpeg",
+                    "-i",
+                    video,
+                    "-r",
+                    str(frames_per_second),
+                    "-q:v",
+                    "0",
+                    f"data_src/{os.path.splitext(video)[0]}_%05d.jpg",
+                ]
+            )
         else:
-            subprocess.run(["ffmpeg", "-i", video, "-q:v", "0", f"data_src/{os.path.splitext(video)[0]}_%05d.jpg"])
+            subprocess.run(
+                [
+                    "ffmpeg",
+                    "-i",
+                    video,
+                    "-q:v",
+                    "0",
+                    f"data_src/{os.path.splitext(video)[0]}_%05d.jpg",
+                ]
+            )
         cap.release()
         if DEBUG:
             print(f"Finished processing '{video}'.")
     except Exception as e:
         print(f"An error occurred while processing '{video}': {e}")
+
 
 def main():
     """Main function to run the script."""
@@ -55,6 +94,7 @@ def main():
 
     for video in video_files:
         extract_frames(video, frames_per_second)
+
 
 if __name__ == "__main__":
     main()

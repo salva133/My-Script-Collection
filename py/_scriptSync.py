@@ -36,12 +36,20 @@ def check_current_directory():
 
 def print_sync_warning():
     # Print a warning message about the synchronization process
-    print("Starting script synchronization...\nWARNING: This process will delete all existing .bat and .py files in all project directories and replace them with the ones currently in _rebuild. This process is irreversible.")
+    print(
+        "Starting script synchronization...\nWARNING: This process will delete all existing .bat and .py files in all project directories and replace them with the ones currently in _rebuild. This process is irreversible."
+    )
 
 
 def get_affected_folders(parent_dir):
     # Get a list of affected folders (directories starting with 'V_', or 'F_')
-    return [dir_name for dir_name in os.listdir(parent_dir) if os.path.isdir(os.path.join(parent_dir, dir_name)) and dir_name != os.path.basename(os.getcwd()) and dir_name.startswith(("V_", "F_"))]
+    return [
+        dir_name
+        for dir_name in os.listdir(parent_dir)
+        if os.path.isdir(os.path.join(parent_dir, dir_name))
+        and dir_name != os.path.basename(os.getcwd())
+        and dir_name.startswith(("V_", "F_"))
+    ]
 
 
 def print_affected_folders(affected_folders):
@@ -73,7 +81,10 @@ def copy_new_scripts(parent_dir, dir_name):
     # Copy .bat and .py files from the '_rebuild' folder to the target folder
     for file_name in os.listdir(os.getcwd()):
         if file_name.endswith((".bat", ".py")) and not file_name.startswith("_"):
-            shutil.copy(os.path.join(os.getcwd(), file_name), os.path.join(parent_dir, dir_name, file_name))
+            shutil.copy(
+                os.path.join(os.getcwd(), file_name),
+                os.path.join(parent_dir, dir_name, file_name),
+            )
 
 
 if __name__ == "__main__":
