@@ -1,5 +1,22 @@
 @echo off
-set /p hours="Geben Sie die Anzahl der Stunden bis zum Shutdown ein (z.B. 1,5): "
+echo.
+echo ****************************************************
+echo * SHUTDOWN-TIMER *
+echo ****************************************************
+echo.
+echo Bitte geben Sie die Anzahl der Stunden bis zum Shutdown ein (z.B. 1,5).
+echo Druecken Sie Enter OHNE Eingabe, um einen geplanten Shutdown abzubrechen.
+echo.
+set /p hours=
+
+:: Prüfen, ob eine Eingabe erfolgt ist
+if "%hours%"=="" (
+    shutdown -a
+    echo [INFO] Der geplante Shutdown wurde erfolgreich abgebrochen.
+    pause
+    exit
+)
+
 set /a seconds=%hours%*3600
 
 :: Berechnung der Shutdown-Zeit
@@ -23,11 +40,12 @@ if %mm% lss 10 set mm=0%mm%
 if %ss% lss 10 set ss=0%ss%
 
 shutdown -s -t %seconds%
-echo Computer wird in %hours% Stunden heruntergefahren.
-echo Geplante Shutdown-Zeit: %hh%:%mm%:%ss%
+echo [INFO] Der Computer wird in %hours% Stunden heruntergefahren.
+echo [INFO] Geplante Shutdown-Zeit: %hh%:%mm%:%ss%
+echo.
 
 :: Warnung bei Eingabe von mehr als 24 Stunden
 if %hours% gtr 24 (
-    echo Warnung: Bei einer Eingabe von mehr als 24 Stunden wird die Zieluhrzeit möglicherweise nicht korrekt angegeben, weil dieses Skript einfach grenzdebil und schnell-schnell zusammengezimmert wurde.
+    echo [WARNUNG] Bei einer Eingabe von mehr als 24 Stunden könnte die Zieluhrzeit ungenau sein.
 )
 pause
