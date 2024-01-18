@@ -8,7 +8,6 @@ DEBUG = True
 
 
 def debug_print(msg):
-    """Druckt die Debug-Nachricht, wenn DEBUG aktiviert ist."""
     if DEBUG:
         print(f"DEBUG: {msg}")
 
