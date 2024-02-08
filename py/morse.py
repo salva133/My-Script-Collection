@@ -46,4 +46,5 @@ def convert_text_to_morse_audio(text):
     return f"Text: {text}\nMorsecode: {morse}\nAudio-Datei: {audio_file}"
 
 # Beispiel der Nutzung
-print(convert_text_to_morse_audio("Es ist nicht tot, was ewig liegt, auf das der Schlaf den Tod besiegt"))
+message = "Es ist nicht tot, was ewig liegt, auf das der Schlaf den Tod besiegt"
+print(convert_text_to_morse_audio(message))
