@@ -1,3 +1,19 @@
+"""
+Script Name: createNewVegasProject.py
+Description: This script assists in setting up a new project for video editing in Vegas by creating a structured project directory. It prompts the user for a project name, capitalizes the first letter after each space, removes spaces, and then sets up the specified project structure by creating a main directory along with predefined subdirectories.
+
+Functions:
+    get_project_name() - Asks the user for a project name, formats it, and returns it.
+    create_directory(directory_name) - Creates a directory if it doesn't already exist.
+    create_subdirectories(parent_directory, subdirectories) - Creates specified subdirectories within a parent directory.
+
+Usage:
+    1. The script asks the user to input a project name.
+    2. It creates a main project directory based on the given name.
+    3. It sets up predefined subdirectories within the main project directory to organize project files.
+"""
+
+
 import os
 import sys
 import time
