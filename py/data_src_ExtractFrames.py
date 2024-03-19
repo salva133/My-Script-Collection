@@ -1,3 +1,18 @@
+"""
+Script Name: data_src_ExtractFrames.py
+Description: This script is designed to extract frames from video files within a specified directory. It supports a wide range of video formats and allows users to specify the frame extraction rate. The extracted frames are saved in a 'data_src' directory, which is created if it does not already exist. This script is particularly useful in preprocessing steps for video editing and deep learning projects.
+
+Functions:
+    get_video_files(cwd) - Retrieves a list of video files in the current working directory, excluding any that start with 'data_'.
+    create_data_src_folder() - Creates a 'data_src' folder if it does not already exist.
+    get_user_input() - Prompts the user to enter the desired frame extraction rate.
+    extract_frames(video_file, fps) - Extracts frames from the specified video file at the specified rate and saves them to the 'data_src' folder.
+
+Variables:
+    DEBUG - Boolean flag to toggle debug mode for additional output.
+"""
+
+
 import os
 import cv2
 import subprocess
