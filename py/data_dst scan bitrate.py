@@ -1,3 +1,19 @@
+"""
+Script Name: data_dst scan bitrate.py
+Description: This script analyzes the bitrate of video files within a specified directory, logs any errors encountered during the process, and creates a text file for each video indicating its bitrate. It is designed to help manage and assess the quality of video files, particularly in post-production workflows.
+
+Functions:
+    log_error(message) - Logs an error message to an 'error_log.txt' file.
+    get_bitrate(file_path) - Retrieves the bitrate of a video file using OpenCV and returns it.
+    create_bitrate_txt_file(dirpath, bitrate) - Creates a text file in the specified directory indicating the video's bitrate.
+
+Usage:
+    1. The script traverses a directory containing video files.
+    2. It calculates and retrieves the bitrate for each video.
+    3. For each video, it creates a corresponding text file in the same directory that lists the video's bitrate.
+"""
+
+
 import os
 import cv2
 

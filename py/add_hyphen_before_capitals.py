@@ -1,3 +1,17 @@
+"""
+Script Name: add_hyphen_before_capitals.py
+Description: This script processes a JSON file containing pharmacy names and modifies each name to insert hyphens before any uppercase letters that follow lowercase letters. This is typically used to improve readability or meet specific formatting requirements.
+
+Functions:
+    add_hyphen_before_capitals(s) - Inserts hyphens before uppercase letters that follow lowercase letters in a given string.
+
+Workflow:
+    1. Reads a JSON file ('pharmacies.json') containing pharmacy names.
+    2. Applies the add_hyphen_before_capitals function to each pharmacy name.
+    3. Writes the modified names back to the JSON file, preserving the original format and encoding.
+"""
+
+
 import json
 import re
 

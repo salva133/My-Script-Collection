@@ -1,3 +1,19 @@
+"""
+Script Name: mergeFilesIntoAligned.py
+Description: This script is designed to consolidate files from multiple subdirectories into a single 'aligned' directory. Before merging, it creates a backup of all files to prevent data loss. The script is particularly useful for organizing dataset files or project assets that are spread across different folders into a unified structure.
+
+Functions:
+    create_directory(path) - Creates a new directory if it does not exist.
+    backup_files(cwd) - Creates a backup of all files in the current working directory.
+    move_files_from_subdirectories(cwd, aligned_dir) - Moves files from all subdirectories into a single specified directory, maintaining a count of total and duplicate files.
+
+Usage:
+    1. The script backs up all files in the current working directory to a 'backup' folder.
+    2. It then moves all files from each subdirectory into the specified 'aligned' directory.
+    3. Duplicate files are noted but not overwritten, ensuring no data is lost during consolidation.
+"""
+
+
 import os
 import shutil
 from tqdm import tqdm

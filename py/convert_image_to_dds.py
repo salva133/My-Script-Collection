@@ -1,3 +1,17 @@
+"""
+Script Name: convert_image_to_dds.py
+Description: This script converts image files from common formats (such as PNG, JPG, JPEG, BMP, and GIF) to the DDS format. It is designed to process all suitable image files within the current directory, converting each one individually and saving the results as new files with the same base filenames but with the .dds extension.
+
+Functions:
+    convert_to_dds(input_image_path, output_image_path) - Converts a single image file from its original format to DDS format using the imageio library.
+
+Workflow:
+    1. Iterate over all files in the current directory.
+    2. Check each file to see if it ends with one of the supported image extensions.
+    3. Convert supported image files to DDS format, maintaining the original base filename.
+"""
+
+
 import os
 from PIL import Image
 import imageio

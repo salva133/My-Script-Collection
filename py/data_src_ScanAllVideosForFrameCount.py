@@ -1,3 +1,17 @@
+"""
+Script Name: data_src_ScanAllVideosForFrameCount.py
+Description: This script scans all video files in the current working directory to count the number of frames in each video. It supports multiple video formats and ensures that only videos not prefixed with 'data_' are processed. The script is useful for analyzing and organizing video data before deep learning processing or video editing tasks.
+
+Functions:
+    check_video_files() - Scans the current working directory for video files in supported formats, excluding those prefixed with 'data_'.
+    check_extracted_folder() - Verifies the presence of the 'extracted' folder and lists its image files.
+    get_frame_count(video_file) - Counts and returns the number of frames in the specified video file.
+
+Variables:
+    DEBUG - Boolean flag to toggle debug mode for additional output.
+"""
+
+
 import os
 import cv2
 

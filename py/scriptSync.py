@@ -1,6 +1,25 @@
+"""
+Script Name: scriptSync.py
+Description: This script is designed to synchronize script files between a development directory and other project directories. It checks for script consistency across directories, warns the user of any potential overwrites, and provides the option to proceed with synchronization. This tool is particularly useful for developers working in environments where multiple projects may share common code or scripts.
+
+Functions:
+    main() - Orchestrates the script synchronization process including user confirmation and error handling.
+    get_parent_directory() - Retrieves the absolute path of the parent directory.
+    check_current_directory() - Ensures the script is run from a valid directory.
+    print_sync_warning() - Displays a warning about the synchronization process.
+    get_affected_folders(parent_dir) - Identifies folders affected by the synchronization.
+    print_affected_folders(affected_folders) - Lists folders that will be impacted by the sync.
+    sync_scripts(parent_dir, affected_folders) - Performs the synchronization of script files across specified folders.
+
+Usage:
+    1. Run the script from the intended development directory.
+    2. Review the listed affected folders and the synchronization warning.
+    3. Confirm to proceed with the synchronization or cancel to stop the process.
+"""
+
+
 import os
 import shutil
-
 
 def main():
     try:

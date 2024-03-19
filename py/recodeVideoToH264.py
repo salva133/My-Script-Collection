@@ -1,3 +1,18 @@
+"""
+Script Name: recodeVideoToH264.py
+Description: This script scans a directory for video files and checks if they are encoded with the H264 codec. If a video is not encoded with H264, the script uses ffmpeg to recode the video to H264 while maintaining the original audio stream. This can be useful for standardizing video formats, especially for compatibility or compression reasons.
+
+Functions:
+    scan_videos(cwd) - Scans the specified directory for video files in formats such as .mp4, .mkv, and .avi, and returns a list of their paths.
+    check_codec(video_file) - Checks if the specified video file uses the H264 codec and returns a boolean value accordingly.
+    recode_video(video_file) - Recodes the specified video file to H264 format if it is not already using that codec.
+
+Usage:
+    1. Place the script in the directory containing the videos to be checked and recoded.
+    2. Run the script. It will automatically scan for video files, check their codecs, and recode them to H264 if necessary.
+"""
+
+
 import os
 import subprocess
 import re

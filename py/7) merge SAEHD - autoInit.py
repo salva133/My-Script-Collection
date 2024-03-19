@@ -1,3 +1,22 @@
+"""
+Script Name: 7) merge SAEHD - autoInit.py
+Description: This script automates the initialization and running of the merging process for SAEHD models using a graphical user interface (GUI). It leverages PyAutoGUI to simulate user inputs, thereby automating the merge process based on predefined settings.
+
+Functions:
+    debug_print(msg) - Prints debug messages if DEBUG mode is on.
+    send_values(values) - Sends a series of values (commands or inputs) to a subprocess using PyAutoGUI.
+    start_merge() - Initializes and starts the merging process with settings obtained from the GUI.
+
+Variables:
+    DEBUG - Flag to turn on/off debugging messages.
+    INTERACTIVE_MERGER, mode, mask_mode, etc. - Variables associated with merge settings, controlled through the GUI.
+
+Note:
+    This script assumes that the GUI for the merging tool is already open and in its default state when executed.
+"""
+
+
+
 import tkinter as tk
 from tkinter import ttk
 import pyautogui

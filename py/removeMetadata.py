@@ -1,3 +1,19 @@
+"""
+Script Name: removeMetadata.py
+Description: This script is designed to remove metadata from media files within a specified directory. It supports various file formats including images and videos. The script uses ExifTool to clear metadata, ensuring that sensitive information is not inadvertently shared. It is particularly useful for privacy-focused tasks such as preparing media for public distribution.
+
+Functions:
+    get_media_files(directory) - Scans the specified directory and its subdirectories for media files and returns a list of their paths.
+    remove_metadata(file_path) - Removes metadata from a single media file using ExifTool.
+    verify_metadata_removal(file_path) - Verifies whether metadata has been successfully removed from the file.
+
+Usage:
+    1. Specify the directory containing the media files.
+    2. Run the script to remove metadata from all supported media files in the directory.
+    3. The script provides feedback on the success of metadata removal for each file.
+"""
+
+
 import os
 import subprocess
 import json

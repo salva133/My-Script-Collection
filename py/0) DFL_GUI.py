@@ -1,3 +1,18 @@
+"""
+Script Name: 0) DFL_GUI.py
+Description: This script creates a graphical user interface (GUI) for running different scripts related to the DeepFaceLab (DFL) process. It organizes scripts into different categories and provides a user-friendly interface to execute them.
+
+Functions:
+    run_script(script_name) - Executes a script using subprocess.run.
+    get_bg_color(column) - Determines the background color for a frame based on its column category.
+    create_frame(root, column, idx) - Creates a frame widget within the Tkinter root window.
+    create_buttons(frame, column) - Populates a given frame with buttons for each script in the column category.
+
+Constants:
+    DATA_SRC_COLOR, DATA_DST_COLOR, MISC_COLOR - Constants for background colors used in the GUI.
+"""
+
+
 import os
 import subprocess
 import tkinter as tk

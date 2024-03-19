@@ -1,3 +1,16 @@
+"""
+Script Name: convert_audio_to_wav.py
+Description: This script converts audio files from various formats to WAV format. It searches for audio files within a specified input directory, supports multiple source formats, and places the converted WAV files into an output directory. The script uses FFmpeg for the conversion process.
+
+Functions:
+    convert_to_wav(input_directory, output_directory="converted_audio") - Converts all supported audio formats found in the input directory to WAV format, storing them in the output directory.
+
+Workflow:
+    1. Check for the existence of the output directory and create it if necessary.
+    2. Search for audio files of specified formats within the input directory.
+    3. Convert each found audio file to WAV format using FFmpeg, maintaining standard audio quality settings.
+"""
+
 import subprocess
 import os
 import glob

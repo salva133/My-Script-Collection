@@ -1,3 +1,18 @@
+"""
+Script Name: copyImagesEvenForTargetAmount_50.py
+Description: This script evenly distributes a set number of image files into a target directory named 'preview'. Specifically, it is designed to select every nth image from the current working directory (where n is determined by the total number of images divided by the target amount) until 50 images have been selected. Supported image formats include JPG, JPEG, and PNG.
+
+Workflow:
+    1. Count the total number of supported image files in the current directory.
+    2. Calculate the step size (n) by dividing the total number of images by the target amount (50).
+    3. Delete the existing 'preview' folder if it exists, and create a new one.
+    4. Copy every nth image file into the 'preview' folder.
+
+Variables:
+    DEBUG - Flag to enable or disable debug mode for additional output during script execution.
+"""
+
+
 import os
 import shutil
 
