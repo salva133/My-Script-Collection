@@ -1,8 +1,14 @@
-import os
-import shutil
-from tqdm import tqdm
-
 """
+Script Name: createNewDFLProject.py
+Description: This script facilitates the creation of a new DeepFaceLab (DFL) project by automating the process of setting up the necessary folder structure and copying required files. It guides the user through selecting an aligned faceset, naming the new project, and organizing the project's directory structure.
+
+Functions:
+    get_new_folder_name() - Prompts the user to enter a desired folder name for the new project.
+    select_folder_from_aligned() - Allows user selection of a folder from the 'aligned' directory, based on a substring extracted from the new folder name.
+    copy_faceset_to_new_folder() - Copies a faceset file from a selected source to a new project folder, ensuring proper file presence and target directory existence.
+    create_subfolder() - Creates a subfolder within a specified directory path after verifying its non-existence.
+    format_size() - Converts file size from bytes to a more human-readable format (KB, MB, GB), aiding in file size display.
+
 Table of Contents for Script Functions:
 
 1. get_new_folder_name
@@ -45,6 +51,10 @@ Table of Contents for Script Functions:
 
 Please note: The main script execution begins by calling the 'main' function if the script is run as the main module.
 """
+
+import os
+import shutil
+from tqdm import tqdm
 
 DEBUG_MODE = False
 
