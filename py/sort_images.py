@@ -1,3 +1,20 @@
+"""
+Script Name: sort_images.py
+Description: This script sorts image files in the current directory based on specific substrings within their filenames. If a filename contains a predefined substring, the script moves the file to a corresponding directory. This tool is particularly useful for organizing a large number of image files into categorized folders.
+
+Functions:
+    move_files(substring, directory) - Checks for the existence of a target directory and moves files containing a specific substring into that directory.
+
+Usage:
+    1. Define the substring and corresponding directory names within the script.
+    2. Run the script in the directory containing the image files to be sorted.
+    3. The script will automatically create the necessary directories (if they do not exist) and move the matching files into them.
+
+Note:
+    The script is set up for dry runs initially; make sure to modify it according to your directory and file management needs.
+"""
+
+
 import os
 import shutil
 from tqdm import tqdm
