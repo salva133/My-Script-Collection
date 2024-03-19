@@ -1,3 +1,18 @@
+"""
+Script Name: morse.py
+Description: This script converts plain text to Morse code and then generates an audio representation of that Morse code using the pydub library. It supports conversion from alphanumeric characters to Morse and can be used to create audio files for Morse code training, alerts, or other applications.
+
+Functions:
+    text_to_morse(text) - Converts a text string to its Morse code representation using a predefined dictionary.
+    morse_to_audio(morse_code, filename="morse_sound.wav") - Converts a Morse code string to an audio file, with customizable parameters for tone frequency and durations of Morse code elements.
+
+Usage:
+    1. Convert text to Morse code using the text_to_morse function.
+    2. Generate an audio file from the Morse code string using the morse_to_audio function.
+    3. The generated audio file will be saved with the specified filename, defaulting to 'morse_sound.wav'.
+"""
+
+
 from pydub import AudioSegment
 from pydub.generators import Sine
 
