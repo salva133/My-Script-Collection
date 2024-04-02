@@ -15,7 +15,7 @@ Usage:
 
 from pydub import AudioSegment
 from pydub.generators import Sine
-from mylib.morse_code import morse_code_dict
+from mylib import morse_code_dict
 
 def text_to_morse(text):
     return ' '.join(morse_code_dict.get(char.upper(), '') for char in text if char.isalpha() or char.isdigit())
