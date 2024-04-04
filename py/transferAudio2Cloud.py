@@ -3,15 +3,16 @@ import shutil
 import time
 import zipfile
 
+debug = True
 ziel_verzeichnis = "E:\\Music & Stuff\\FL Studio"
 backup_verzeichnis = "E:\\Music & Stuff\\FL Studio Backup"
-debug = True
+file_extensions = ('.mp3', '.wav', '.flac')
 
 def debug_print(message):
     if debug:
-        print(message)
+        print("DEBUG: "+message)
 
-def erstelle_backup(ziel):
+def erstelle_backup(ziel): # Muss noch überarbeitet werden
     try:
         backup_name = os.path.join(backup_verzeichnis, 'FL_Studio_Backup.zip')
         with zipfile.ZipFile(backup_name, 'w') as backup_zip:
@@ -35,7 +36,7 @@ def erstelle_verzeichnis(verzeichnis):
         if os.path.exists(verzeichnis):
             if os.listdir(verzeichnis):
                 debug_print(f"Verzeichnis existiert und ist nicht leer: {verzeichnis}")
-                erstelle_backup(verzeichnis)
+                # erstelle_backup(verzeichnis)
                 for filename in os.listdir(verzeichnis):
                     file_path = os.path.join(verzeichnis, filename)
                     if os.path.isfile(file_path) or os.path.islink(file_path):
@@ -58,7 +59,7 @@ def kopiere_audiodateien(cwd, ziel):
     try:
         for root, dirs, files in os.walk(cwd):
             for file in files:
-                if file.endswith(('.mp3', '.wav', '.flac')):
+                if file.endswith(file_extensions):
                     source_path = os.path.join(root, file)
                     destination_path = os.path.join(ziel, file)
                     try:
@@ -78,9 +79,9 @@ def main():
         debug_print("Kopieroperation abgeschlossen.")
     except Exception as e:
         debug_print(f'Fehler beim Kopiervorgang: {e}')
-        debug_print('Stelle ursprünglichen Zustand aus Backup wieder her...')
-        stelle_backup_wieder_her(os.path.join(backup_verzeichnis, 'FL_Studio_Backup.zip'), ziel_verzeichnis)
-        debug_print('Wiederherstellung abgeschlossen.')
+        # debug_print('Stelle ursprünglichen Zustand aus Backup wieder her...')
+        # stelle_backup_wieder_her(os.path.join(backup_verzeichnis, 'FL_Studio_Backup.zip'), ziel_verzeichnis)
+        # debug_print('Wiederherstellung abgeschlossen.')
 
 if __name__ == "__main__":
     main()
