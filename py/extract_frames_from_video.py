@@ -1,12 +1,12 @@
 """
-Script Name: data_src_ExtractFrames.py
-Description: This script is designed to extract frames from video files within a specified directory. It supports a wide range of video formats and allows users to specify the frame extraction rate. The extracted frames are saved in a 'data_src' directory, which is created if it does not already exist. This script is particularly useful in preprocessing steps for video editing and deep learning projects.
+Script Name: extracted_ExtractFrames.py
+Description: This script is designed to extract frames from video files within a specified directory. It supports a wide range of video formats and allows users to specify the frame extraction rate. The extracted frames are saved in a 'extracted' directory, which is created if it does not already exist. This script is particularly useful in preprocessing steps for video editing and deep learning projects.
 
 Functions:
     get_video_files(cwd) - Retrieves a list of video files in the current working directory, excluding any that start with 'data_'.
-    create_data_src_folder() - Creates a 'data_src' folder if it does not already exist.
+    create_extracted_folder() - Creates a 'extracted' folder if it does not already exist.
     get_user_input() - Prompts the user to enter the desired frame extraction rate.
-    extract_frames(video_file, fps) - Extracts frames from the specified video file at the specified rate and saves them to the 'data_src' folder.
+    extract_frames(video_file, fps) - Extracts frames from the specified video file at the specified rate and saves them to the 'extracted' folder.
 
 Variables:
     DEBUG - Boolean flag to toggle debug mode for additional output.
@@ -45,12 +45,12 @@ def get_video_files(cwd):
     return files
 
 
-def create_data_src_folder():
-    """Create the "data_src" folder if it doesn't already exist."""
-    if not os.path.exists("data_src"):
-        os.mkdir("data_src")
+def create_extracted_folder():
+    """Create the "extracted" folder if it doesn't already exist."""
+    if not os.path.exists("extracted"):
+        os.mkdir("extracted")
         if DEBUG:
-            print("Created 'data_src' directory.")
+            print("Created 'extracted' directory.")
 
 
 def get_user_input():
@@ -75,7 +75,7 @@ def extract_frames(video, frames_per_second):
                     str(frames_per_second),
                     "-q:v",
                     "0",
-                    f"data_src/{os.path.splitext(video)[0]}_%05d.jpg",
+                    f"extracted/{os.path.splitext(video)[0]}_%05d.jpg",
                 ]
             )
         else:
@@ -86,7 +86,7 @@ def extract_frames(video, frames_per_second):
                     video,
                     "-q:v",
                     "0",
-                    f"data_src/{os.path.splitext(video)[0]}_%05d.jpg",
+                    f"extracted/{os.path.splitext(video)[0]}_%05d.jpg",
                 ]
             )
         cap.release()
@@ -104,7 +104,7 @@ def main():
     if not video_files:
         raise Exception("No video files found in the current working directory.")
 
-    create_data_src_folder()
+    create_extracted_folder()
     frames_per_second = get_user_input()
 
     for video in video_files:

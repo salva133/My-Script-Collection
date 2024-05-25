@@ -14,9 +14,9 @@ Variables:
 
 import os
 import cv2
+from time import sleep
 
 DEBUG = False
-
 
 def check_video_files():
     video_files = [
@@ -107,3 +107,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    sleep(5)
