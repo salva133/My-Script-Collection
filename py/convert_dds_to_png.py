@@ -1,23 +1,23 @@
 import os
 from PIL import Image
 
-def convert_dds_to_png():
-    # Hole das aktuelle Arbeitsverzeichnis
-    cwd = os.getcwd()
-    
-    # Liste alle Dateien im aktuellen Verzeichnis auf
-    files = os.listdir(cwd)
-    
-    # Filtere nur die DDS-Dateien heraus
-    dds_files = [file for file in files if file.lower().endswith('.dds')]
-    
-    for dds_file in dds_files:
-        # Öffne die DDS-Datei
-        with Image.open(dds_file) as img:
-            # Konvertiere und speichere als PNG
-            png_file = f"{os.path.splitext(dds_file)[0]}.png"
-            img.save(png_file)
-            print(f"Konvertiert: {dds_file} -> {png_file}")
+# Verzeichnis mit DDS-Dateien
+cwd = os.getcwd()
 
-if __name__ == "__main__":
-    convert_dds_to_png()
+# Gehe durch alle Dateien im aktuellen Verzeichnis
+for filename in os.listdir(cwd):
+    if filename.endswith(".dds"):
+        # Pfad zur DDS-Datei
+        dds_path = os.path.join(cwd, filename)
+        
+        # Bild öffnen
+        with Image.open(dds_path) as img:
+            # Pfad zur PNG-Datei
+            png_path = os.path.splitext(dds_path)[0] + ".png"
+            
+            # Bild als PNG speichern
+            img.save(png_path, format="PNG")
+            
+        print(f"Konvertiert: {filename} -> {os.path.basename(png_path)}")
+
+print("Konvertierung abgeschlossen.")
