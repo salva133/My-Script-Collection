@@ -10,7 +10,10 @@ DEBUG_MODE = False
 def debug_print(message):
     if DEBUG_MODE:
         print(f"[DEBUG] {message}")
+
+
 async def get_video_info(file_path):
+    debug_print(f"Getting video info for {file_path}")
     ffprobe_cmd = f'ffprobe -v error -select_streams v:0 -show_entries stream=bit_rate,width,height -print_format json "{file_path}"'
     process = await asyncio.create_subprocess_shell(
         ffprobe_cmd,
@@ -29,6 +32,7 @@ async def get_video_info(file_path):
     bitrate = round(int(stream["bit_rate"]) / (10**6), 2)
     width = int(stream["width"])
     height = int(stream["height"])
+    debug_print(f"Video info - Bitrate: {bitrate} Mbps, Resolution: {width}x{height}")
     return bitrate, (width, height)
 
 
@@ -73,39 +77,29 @@ def find_video_files(path):
         if file.endswith(video_extensions)
     ]
 
-    if DEBUG_MODE:
-        print("[DEBUG] Found video files: ", video_files)  # Debug Printout
+    debug_print(f"Found video files: {video_files}")
     return video_files
 
 
 def compress_video(input_file, crf, output_file):
     try:
+        debug_print(f"Compressing {input_file} with CRF {crf}")
         (ffmpeg.input(input_file).output(output_file, vcodec="libx264", crf=crf).run())
         print("\nVideo compression completed.")
-
-        if DEBUG_MODE:
-            print(
-                f"\n[DEBUG] Compression status for {input_file}: Success"
-            )  # Debug Printout
+        debug_print(f"Compression status for {input_file}: Success")
         return True
-
     except (ffmpeg.Error, Exception) as e:
         print(f"\nError compressing {input_file}: {str(e)}")
-
-        if DEBUG_MODE:
-            print(
-                f"\n[DEBUG] Compression status for {input_file}: Failure"
-            )  # Debug Printout
+        debug_print(f"Compression status for {input_file}: Failure")
         return False
 
 
 def print_top_bitrates(video_info):
     max_file_length = max(len(file) for file in video_info.keys())
+    debug_print("Printing top bitrates")
 
     print("\nTop 20 video files by bitrate:")
-    sorted_info = sorted(
-        video_info.items(), key=lambda x: x[1]["bitrate"], reverse=True
-    )
+    sorted_info = sorted(video_info.items(), key=lambda x: x[1]["bitrate"], reverse=True)
     for i, (file, info) in enumerate(sorted_info[:20], 1):
         print(
             f"{i}. {file:<{max_file_length}} - {info['bitrate']} Mbit/s - {info['dimensions'][0]}x{info['dimensions'][1]}"
@@ -115,19 +109,13 @@ def print_top_bitrates(video_info):
 def get_user_selection(path, video_info):
     if len(video_info) == 1:
         selected_file = next(iter(video_info))
-        print(
-            f"Only one file found: {selected_file}.\nIt will be automatically selected for compression."
-        )
+        print(f"Only one file found: {selected_file}.\nIt will be automatically selected for compression.")
     else:
-        user_input = input(
-            "\nSelect a video file by number or enter the file name with extension if it's not in the list: "
-        )
+        user_input = input("\nSelect a video file by number or enter the file name with extension if it's not in the list: ")
 
         if user_input.isdigit():
             index = int(user_input) - 1
-            sorted_info = sorted(
-                video_info.items(), key=lambda x: x[1]["bitrate"], reverse=True
-            )
+            sorted_info = sorted(video_info.items(), key=lambda x: x[1]["bitrate"], reverse=True)
             if 0 <= index < len(sorted_info):
                 selected_file = sorted_info[index][0]
             else:
@@ -139,8 +127,7 @@ def get_user_selection(path, video_info):
                 print("File not found.")
                 sys.exit()
 
-    if DEBUG_MODE:
-        print(f"[DEBUG] Selected file: {selected_file}")  # Debug Printout
+    debug_print(f"Selected file: {selected_file}")
     return selected_file
 
 
@@ -152,6 +139,7 @@ def compress_selected_file(selected_file, video_info):
     resolution = video_info[selected_file]["dimensions"]
 
     crf = determine_crf(bitrate, resolution)
+    debug_print(f"Determined CRF for {selected_file}: {crf}")
 
     if compress_video(selected_file, crf, output_file):
         print(f"Video compressed successfully: {output_file}")
@@ -175,6 +163,7 @@ def determine_crf(bitrate, resolution):
 def is_compression_worthwhile(bitrate, resolution):
     width, height = resolution
     total_pixels = width * height
+    debug_print(f"Checking if compression is worthwhile for bitrate {bitrate} and resolution {width}x{height}")
 
     if total_pixels > 3840 * 2160:  # if the video is 4K
         return bitrate > 10
@@ -183,17 +172,13 @@ def is_compression_worthwhile(bitrate, resolution):
 
 
 def post_compress_operations(selected_file, output_file):
-    # delete_original = input("\nWould you like to delete the original file? (y/n): ")
     delete_original = "y"
+    debug_print(f"Post-compression operations for {selected_file}")
     if delete_original.lower() == "y":
         original_filename = selected_file
         os.remove(selected_file)  # Delete the original file
-        os.rename(
-            output_file, original_filename
-        )  # Rename the compressed file to original filename
-        print(
-            f"Original file deleted and compressed file renamed to {original_filename}"
-        )
+        os.rename(output_file, original_filename)  # Rename the compressed file to original filename
+        print(f"Original file deleted and compressed file renamed to {original_filename}")
     else:
         print(f"Original file kept. Compressed file is at {output_file}")
 
@@ -201,6 +186,7 @@ def post_compress_operations(selected_file, output_file):
 async def main():
     path = os.getcwd()
     video_files = find_video_files(path)
+    debug_print(f"Scanning for video files in {path}")
 
     if not video_files:
         print("No video files found.")
@@ -222,14 +208,10 @@ async def main():
 
     print_top_bitrates(video_info)
     selected_file = get_user_selection(path, video_info)
-
-    if DEBUG_MODE:
-        print(f"Selected file: {selected_file}")
+    debug_print(f"Selected file for compression: {selected_file}")
 
     compress_selected_file(selected_file, video_info)
-
-    if DEBUG_MODE:
-        print("End of program")
+    debug_print("End of program")
 
 
 if __name__ == "__main__":
