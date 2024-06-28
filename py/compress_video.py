@@ -7,6 +7,9 @@ import asyncio
 DEBUG_MODE = False
 
 
+def debug_print(message):
+    if DEBUG_MODE:
+        print(f"[DEBUG] {message}")
 async def get_video_info(file_path):
     ffprobe_cmd = f'ffprobe -v error -select_streams v:0 -show_entries stream=bit_rate,width,height -print_format json "{file_path}"'
     process = await asyncio.create_subprocess_shell(
