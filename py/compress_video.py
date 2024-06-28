@@ -4,7 +4,7 @@ import json
 import ffmpeg
 import asyncio
 
-DEBUG_MODE = False
+DEBUG_MODE = True
 
 
 def debug_print(message):
