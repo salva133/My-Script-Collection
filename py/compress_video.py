@@ -1,3 +1,39 @@
+"""
+Video Compression Script
+
+This script scans for video files in the current directory, retrieves their bitrate and resolution information,
+and compresses the selected video file using ffmpeg. The script is capable of handling various video formats
+and performs the compression based on a calculated Constant Rate Factor (CRF) to ensure optimal quality.
+
+Modules Required:
+- os
+- sys
+- json
+- ffmpeg
+- asyncio
+
+Environment Variables:
+- DEBUG_MODE: If set to True, enables debug prints for detailed logging.
+
+Functions:
+- debug_print(message): Prints debug messages if DEBUG_MODE is enabled.
+- get_video_info(file_path): Retrieves video bitrate and resolution using ffprobe.
+- find_video_files(path): Scans the directory for video files with supported extensions.
+- compress_video(input_file, crf, output_file): Compresses the video using ffmpeg with the specified CRF.
+- print_top_bitrates(video_info): Prints the top 20 video files by bitrate.
+- get_user_selection(path, video_info): Allows user to select a video file for compression.
+- compress_selected_file(selected_file, video_info): Manages the compression of the selected file.
+- determine_crf(bitrate, resolution): Determines the CRF value based on video bitrate and resolution.
+- is_compression_worthwhile(bitrate, resolution): Checks if compression is worthwhile based on bitrate and resolution.
+- post_compress_operations(selected_file, output_file): Handles post-compression operations like renaming or deleting original files.
+
+Usage:
+Run this script in the directory containing the video files to be compressed. The script will guide you through the process of selecting a video file and will compress it based on the calculated parameters.
+
+Example:
+$ python compress_video.py
+"""
+
 import os
 import sys
 import json
