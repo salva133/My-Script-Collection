@@ -1,6 +1,7 @@
 const axios = require("axios");
 const fs = require("fs");
 const XLSX = require("xlsx");
+require('dotenv').config();  // Umgebungsvariablen laden
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -19,8 +20,8 @@ let data = XLSX.utils.sheet_to_json(worksheet);
 // Definieren Sie die Basis-URL für die Geocoding API
 const baseURL = "https://maps.googleapis.com/maps/api/geocode/json";
 
-// Fügen Sie hier Ihren API-Schlüssel ein
-const apiKey = "AIzaSyAtms-7qsst_vD187mM3n6QVRNGrk1xC_4";
+// API-Schlüssel aus Umgebungsvariablen laden
+const apiKey = process.env.GOOGLE_API_KEY;
 
 // Eine asynchrone Funktion, die die Geocoding API aufruft
 async function getGeoData(address) {
@@ -44,7 +45,7 @@ async function getGeoData(address) {
     const location = response.data.results[0].geometry.location;
     return location;
   } catch (error) {
-    const errorMessage = `Error getting geodata for ${address}: ${error}\n`;
+    const errorMessage = `Error getting geodata for ${address}: ${error.message}\n`;
     console.error(errorMessage);
     fs.appendFileSync("error.log", errorMessage);
     return null;
@@ -65,7 +66,7 @@ async function addGeoData(data) {
       };
     }
 
-    // Warten Sie 25 Millisekunden vor dem nächsten Request
+    // Warten Sie 50 Millisekunden vor dem nächsten Request
     await sleep(50);
   }
   return data;
@@ -80,7 +81,7 @@ addGeoData(data)
     );
   })
   .catch((error) => {
-    const errorMessage = `Error: ${error}\n`;
+    const errorMessage = `Error: ${error.message}\n`;
     console.error(errorMessage);
     fs.appendFileSync("error.log", errorMessage);
   });
