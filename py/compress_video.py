@@ -1,18 +1,3 @@
-"""
-Script Name: compressVideo.py
-Description: This script automates the process of compressing video files within a specified directory. It uses FFmpeg to retrieve video information and applies compression based on specified parameters. The script is designed to handle multiple video files asynchronously, improving efficiency and speed.
-
-Functions:
-    get_video_info(file_path) - Asynchronously retrieves video bitrate, width, and height using FFmpeg.
-    find_video_files(path) - Scans a directory and its subdirectories for video files with specified extensions.
-    compress_video(input_file, output_file, target_bitrate) - Compresses a video file to the target bitrate while maintaining its aspect ratio.
-    main() - Orchestrates the process of finding, analyzing, and compressing video files.
-
-Variables:
-    DEBUG_MODE - Flag to enable or disable debug mode for additional output during script execution.
-"""
-
-
 import os
 import sys
 import json
