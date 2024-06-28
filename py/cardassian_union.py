@@ -45,5 +45,3 @@ class CardassianControlBajor:
     #     print("Ending the occupation of Bajor.")
     #     self.occupation_status = "ended"
     #     print("Bajor is now free from Cardassian control.")
-
-
