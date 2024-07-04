@@ -1,12 +1,12 @@
 """
 Script Name: extracted_ExtractFrames.py
-Description: This script is designed to extract frames from video files within a specified directory. It supports a wide range of video formats and allows users to specify the frame extraction rate. The extracted frames are saved in a 'extracted' directory, which is created if it does not already exist. This script is particularly useful in preprocessing steps for video editing and deep learning projects.
+Description: This script is designed to extract frames from video files within a specified directory. It supports a wide range of video formats and allows users to specify the frame extraction rate. The extracted_video-frames frames are saved in a 'extracted_video-frames' directory, which is created if it does not already exist. This script is particularly useful in preprocessing steps for video editing and deep learning projects.
 
 Functions:
     get_video_files(cwd) - Retrieves a list of video files in the current working directory, excluding any that start with 'data_'.
-    create_extracted_folder() - Creates a 'extracted' folder if it does not already exist.
+    create_extracted_folder() - Creates a 'extracted_video-frames' folder if it does not already exist.
     get_user_input() - Prompts the user to enter the desired frame extraction rate.
-    extract_frames(video_file, fps) - Extracts frames from the specified video file at the specified rate and saves them to the 'extracted' folder.
+    extract_frames(video_file, fps) - Extracts frames from the specified video file at the specified rate and saves them to the 'extracted_video-frames' folder.
 
 Variables:
     DEBUG - Boolean flag to toggle debug mode for additional output.
@@ -46,17 +46,17 @@ def get_video_files(cwd):
 
 
 def create_extracted_folder():
-    """Create the "extracted" folder if it doesn't already exist."""
-    if not os.path.exists("extracted"):
-        os.mkdir("extracted")
+    """Create the "extracted_video-frames" folder if it doesn't already exist."""
+    if not os.path.exists("extracted_video-frames"):
+        os.mkdir("extracted_video-frames")
         if DEBUG:
-            print("Created 'extracted' directory.")
+            print("Created 'extracted_video-frames' directory.")
 
 
 def get_user_input():
     """Get the user input for the frame rate."""
     frames_per_second = input(
-        "What every Nth frame of a second should be extracted? Press Enter to extract all frames: "
+        "What every Nth frame of a second should be extracted_video-frames? Press Enter to extract all frames: "
     )
     return frames_per_second if frames_per_second else None
 
@@ -75,7 +75,7 @@ def extract_frames(video, frames_per_second):
                     str(frames_per_second),
                     "-q:v",
                     "0",
-                    f"extracted/{os.path.splitext(video)[0]}_%05d.jpg",
+                    f"extracted_video-frames/{os.path.splitext(video)[0]}_%05d.jpg",
                 ]
             )
         else:
@@ -86,7 +86,7 @@ def extract_frames(video, frames_per_second):
                     video,
                     "-q:v",
                     "0",
-                    f"extracted/{os.path.splitext(video)[0]}_%05d.jpg",
+                    f"extracted_video-frames/{os.path.splitext(video)[0]}_%05d.jpg",
                 ]
             )
         cap.release()
