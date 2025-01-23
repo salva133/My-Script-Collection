@@ -1,6 +1,5 @@
 import os
 import subprocess
-import re
 
 def scan_videos(cwd):
     video_files = []
