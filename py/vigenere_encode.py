@@ -1,5 +1,20 @@
 from mylib import ALPHABET
-from mylib import VKEY as encryptor
+from cryptography.fernet import Fernet
+
+enc_path = "F:/MyScriptCollection/py/vkey.enc"
+secret_path = "F:/MyScriptCollection/py/secret.key"
+
+def load_secret_key():
+    with open(secret_path, "rb") as key_file:
+        return key_file.read()
+
+def load_vkey():
+    with open(enc_path, "rb") as f:
+        encrypted_vkey = f.read()
+    cipher = Fernet(load_secret_key())
+    return cipher.decrypt(encrypted_vkey).decode()
+
+encryptor = load_vkey()
 
 def vigenere_encrypt_char(char, encryptor, key_index):
     if char.upper() not in ALPHABET:
