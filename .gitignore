@@ -1,5 +1,5 @@
-*/venv/*
-/findings
 __pycache__
-morse_sound.wav
-vkey.py
+*.wav
+*vkey*
+*.key
+*.enc
