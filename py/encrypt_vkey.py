@@ -1,5 +1,4 @@
 from cryptography.fernet import Fernet
-from vkey import KEY
 
 # SECRET_KEY aus Datei laden oder manuell einfügen
 with open("secret.key", "rb") as key_file:
