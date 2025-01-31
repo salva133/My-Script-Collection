@@ -7,7 +7,7 @@ with open("secret.key", "rb") as key_file:
 cipher = Fernet(SECRET_KEY)
 
 # Ersetze dies mit deinem tatsächlichen Vigenère-Schlüssel
-VKEY = KEY
+VKEY = "HierKeyUebergeben"
 
 # VKEY verschlüsseln
 encrypted_vkey = cipher.encrypt(VKEY.encode())
