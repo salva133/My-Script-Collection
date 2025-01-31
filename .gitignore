@@ -3,3 +3,4 @@ __pycache__
 *vkey*
 *.key
 *.enc
+py/key_manager.py
