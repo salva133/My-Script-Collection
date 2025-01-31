@@ -1,8 +1,4 @@
-from vkey import KEY
-
-
 ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜß"
-VKEY = KEY
 
 morse_code_dict = {
         'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.', 
