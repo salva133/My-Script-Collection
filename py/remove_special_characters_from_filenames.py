@@ -4,7 +4,17 @@ import re
 # Muster für erlaubte Zeichen (alphanumerische Zeichen, Unterstrich, Punkt und Leerzeichen)
 pattern = re.compile(r'[^a-zA-Z0-9_. ]')
 
+def replace_umlauts(text):
+    umlaut_map = {
+        'ä': 'ae', 'ö': 'oe', 'ü': 'ue', 'ß': 'ss',
+        'Ä': 'Ae', 'Ö': 'Oe', 'Ü': 'Ue'
+    }
+    for umlaut, replacement in umlaut_map.items():
+        text = text.replace(umlaut, replacement)
+    return text
+
 def process_filename(filename):
+    filename = replace_umlauts(filename)
     return re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', 
                   re.sub(r'\s+', ' ', 
                          pattern.sub('', filename.replace("4K", "").replace("ASMR", ""))
