@@ -18,7 +18,8 @@ def find_redundant_files(directory):
     
     return file_map
 
-def move_non_mp3_duplicates(directory):
+def move_non_mp3_duplicates():
+    directory = os.getcwd()
     file_map = find_redundant_files(directory)
     tbd_folder = os.path.join(directory, "TBD")
     
@@ -42,12 +43,8 @@ def move_non_mp3_duplicates(directory):
                     os.rename(path, os.path.join(tbd_folder, os.path.basename(path)))
 
 def main():
-    directory = input("Enter the directory path: ").strip()
-    if os.path.exists(directory) and os.path.isdir(directory):
-        move_non_mp3_duplicates(directory)
-        print("Non-MP3 redundant files moved to TBD folder successfully.")
-    else:
-        print("Invalid directory path.")
+    move_non_mp3_duplicates()
+    print("Non-MP3 redundant files moved to TBD folder successfully.")
 
 if __name__ == "__main__":
     main()
