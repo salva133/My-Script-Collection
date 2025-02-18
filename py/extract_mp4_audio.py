@@ -25,8 +25,13 @@ def extract_audio_from_mp4():
                 "ffmpeg", "-i", mp4_path, "-c:a", "copy", "-map", "a", mp3_path, "-y"
             ]
             
-            subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            logger.info(f"Extracted: {mp3_path}")
+            try:
+                subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, check=True)
+                logger.info(f"Extracted: {mp3_path}")
+            except subprocess.CalledProcessError as e:
+                logger.error(f"Failed to extract audio from {file}: {e.stderr.decode().strip()}")
+            except Exception as e:
+                logger.error(f"Unexpected error processing {file}: {e}")
 
 if __name__ == "__main__":
     extract_audio_from_mp4()
