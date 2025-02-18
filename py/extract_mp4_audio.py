@@ -22,7 +22,7 @@ def extract_audio_from_mp4():
             logger.info(f"Processing file: {file}")
             
             command = [
-                "ffmpeg", "-i", mp4_path, "-c:a", "copy", "-map", "a", mp3_path, "-y"
+                "ffmpeg", "-i", mp4_path, "-c:a", "libmp3lame", "-q:a", "2", "-map", "a", mp3_path, "-y"
             ]
             
             try:
