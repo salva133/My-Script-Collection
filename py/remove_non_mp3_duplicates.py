@@ -1,5 +1,9 @@
 import os
 import re
+import logging
+
+# Configure logger
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def find_redundant_files(directory):
     file_map = {}
@@ -20,6 +24,7 @@ def find_redundant_files(directory):
 
 def move_non_mp3_duplicates():
     directory = os.getcwd()
+    logging.info(f"Scanning directory: {directory}")
     file_map = find_redundant_files(directory)
     tbd_folder = os.path.join(directory, "TBD")
     
@@ -29,8 +34,10 @@ def move_non_mp3_duplicates():
             file_path = os.path.join(tbd_folder, file)
             if os.path.isfile(file_path):
                 os.remove(file_path)
+        logging.info("Cleared existing TBD folder.")
     else:
         os.makedirs(tbd_folder)
+        logging.info("Created TBD folder.")
     
     for base_name, files in file_map.items():
         formats = {ext: path for ext, path in files}
@@ -39,12 +46,12 @@ def move_non_mp3_duplicates():
         if 'mp3' in formats:
             for ext, path in formats.items():
                 if ext != 'mp3':
-                    print(f"Moving: {path} to {tbd_folder}")
+                    logging.info(f"Moving: {path} to {tbd_folder}")
                     os.rename(path, os.path.join(tbd_folder, os.path.basename(path)))
 
 def main():
     move_non_mp3_duplicates()
-    print("Non-MP3 redundant files moved to TBD folder successfully.")
+    logging.info("Non-MP3 redundant files moved to TBD folder successfully.")
 
 if __name__ == "__main__":
     main()
