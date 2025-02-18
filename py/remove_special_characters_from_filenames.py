@@ -3,6 +3,7 @@ import re
 
 # Muster für erlaubte Zeichen (alphanumerische Zeichen, Unterstrich, Punkt und Leerzeichen)
 pattern = re.compile(r'[^a-zA-Z0-9_. ]')
+paren_pattern = re.compile(r'\s*\((\d+kbit_[A-Z]+)\)\s*')  # Entfernt nur Klammern mit Bitrate und Codec-Info
 
 def replace_umlauts(text):
     umlaut_map = {
@@ -15,6 +16,7 @@ def replace_umlauts(text):
 
 def process_filename(filename):
     filename = replace_umlauts(filename)
+    filename = re.sub(paren_pattern, '', filename)  # Entfernt nur spezifische Klammerinhalte
     return re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', 
                   re.sub(r'\s+', ' ', 
                          pattern.sub('', filename.replace("4K", "").replace("ASMR", ""))
