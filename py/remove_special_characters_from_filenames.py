@@ -1,9 +1,9 @@
 import os
 import re
 
-# Muster für erlaubte Zeichen (alphanumerische Zeichen, Unterstrich, Punkt und Leerzeichen)
+# Pattern for allowed characters (alphanumeric characters, underscore, dot, and space)
 pattern = re.compile(r'[^a-zA-Z0-9_. ]')
-paren_pattern = re.compile(r'\s*\((\d+kbit_[A-Z]+)\)\s*')  # Entfernt nur Klammern mit Bitrate und Codec-Info
+paren_pattern = re.compile(r'\s*\((\d+kbit_[A-Z]+)\)\s*')  # Removes only brackets with bitrate and codec info
 
 def replace_umlauts(text):
     umlaut_map = {
@@ -16,34 +16,34 @@ def replace_umlauts(text):
 
 def process_filename(filename):
     filename = replace_umlauts(filename)
-    filename = re.sub(paren_pattern, '', filename)  # Entfernt nur spezifische Klammerinhalte
+    filename = re.sub(paren_pattern, '', filename)  # Removes only specific bracket content
     return re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', 
                   re.sub(r'\s+', ' ', 
                          pattern.sub('', filename.replace("4K", "").replace("ASMR", ""))
                         ).strip())
 
-# Funktion zum Durchlaufen von Verzeichnissen, auch rekursiv durch Subdirs
+# Function to traverse directories, including subdirectories
 def rename_files_in_directory(directory):
     for root, dirs, files in os.walk(directory):
         for filename in files:
-            # Verarbeite den Dateinamen
+            # Process the filename
             new_filename = process_filename(filename)
             
-            # Vollständiger Pfad zu den Dateien
+            # Full path to the files
             old_file_path = os.path.join(root, filename)
             new_file_path = os.path.join(root, new_filename)
             
-            # Umbenennen der Datei, wenn der neue Name anders ist
+            # Rename the file if the new name is different
             if new_filename != filename:
                 os.rename(old_file_path, new_file_path)
-                print(f"Umbenannt: {old_file_path} -> {new_file_path}")
+                print(f"Renamed: {old_file_path} -> {new_file_path}")
 
-# Starte den Prozess im aktuellen Verzeichnis (inkl. Subdirs)
+# Start the process in the current directory (including subdirectories)
 try:
     cwd = os.getcwd()
     rename_files_in_directory(cwd)
-    print("Fertig!")
+    print("Done!")
 except Exception as e:
-    print(f"Es ist ein Fehler aufgetreten: {e}")
+    print(f"An error occurred: {e}")
 finally:
-    input("Programm beendet.")
+    input("Program finished.")
