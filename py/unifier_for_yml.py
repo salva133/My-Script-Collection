@@ -42,7 +42,8 @@ def combine_yml_files(output_file, search_directory):
 if __name__ == "__main__":
     script_dir = os.path.dirname(os.path.abspath(__file__))  # Verzeichnis des Skripts
     search_directory = script_dir  # Durchsuche das Verzeichnis des Skripts rekursiv
-    output_file = os.path.join(script_dir, 'combined.yml')  # Speichert das kombinierte File im gleichen Ordner
+    parent_folder_name = os.path.basename(script_dir)
+    output_file = os.path.join(script_dir, f'{parent_folder_name}.yml')  # Speichert das kombinierte File im gleichen Ordner
     
     try:
         logger.info(f"Starte das Zusammenführen von .yml-Dateien in {search_directory}")
