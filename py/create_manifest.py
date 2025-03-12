@@ -1,12 +1,30 @@
 import os
-import subprocess
+import re
 from collections import defaultdict
 
 # Liste erlaubter Audioformate
 AUDIO_EXTENSIONS = {".mp3", ".wav", ".flac", ".aac", ".ogg", ".m4a", ".wma"}
 
+def extract_relevant_name(filename):
+    """
+    Extrahiert den relevanten Namensteil aus einem Dateinamen.
+    Falls '(remastered)' oder '(cover)' vorkommen, werden sie entfernt.
+    Falls kein '_' vorhanden ist, wird der gesamte Name ohne Dateiendung genutzt.
+    """
+    base_name, _ = os.path.splitext(filename)  # Entfernt Dateiendung
+
+    # Entferne '(remastered)' oder '(cover)', falls vorhanden
+    base_name = re.sub(r'\s*\((remastered|cover)\)', '', base_name, flags=re.IGNORECASE)
+
+    # Falls ein Unterstrich vorhanden ist, alles nach dem ersten Unterstrich nutzen
+    if "_" in base_name:
+        return base_name.split("_", 1)[1].strip().lower()
+
+    return base_name.strip().lower()  # Falls kein Unterstrich, den gesamten Namen nutzen
+
 def create_manifest(output_file="manifest.txt"):
-    seen_files = defaultdict(list)  # Dictionary zur Erfassung von doppelten Namen
+    seen_files = defaultdict(list)  # Dictionary zur Erfassung von Dateipfaden
+    name_redundancies = defaultdict(list)  # Dictionary für redundante Namen
 
     with open(output_file, "w", encoding="utf-8") as f:
         for root, _, files in os.walk(os.getcwd()):
@@ -17,25 +35,22 @@ def create_manifest(output_file="manifest.txt"):
                     rel_path_no_ext = os.path.splitext(rel_path)[0]
                     f.write(rel_path_no_ext + "\n")
 
-                    # Speichert Dateiname (ohne Pfad) für doppelte Einträge
+                    # Originalname speichern
                     seen_files[file].append(rel_path)
+
+                    # Prüfen auf redundante Namen
+                    relevant_name = extract_relevant_name(file)
+                    name_redundancies[relevant_name].append(rel_path)
 
         # Redundante Namen am Ende des Manifests ausgeben
         f.write("\n# Redundante Dateinamen:\n")
-        for name, paths in seen_files.items():
-            if len(paths) > 1:
+        for name, paths in name_redundancies.items():
+            if len(paths) > 1:  # Nur wenn >1 Datei existiert
                 f.write(f"{name} ({len(paths)}x):\n")
                 for path in paths:
                     f.write(f"  - {path}\n")
 
-def run_enumeration_script():
-    try:
-        script_path = os.path.join(os.getcwd(), "enumerate_all_files_here_plus_in_subdirs.py")
-        subprocess.run(["python", script_path], check=True)
-    except Exception as e:
-        print(f"Fehler beim Ausführen von {script_path}: {e}")
+    print("Manifest wurde erstellt: manifest.txt (überschrieben falls vorhanden)")
 
 if __name__ == "__main__":
-    run_enumeration_script()
     create_manifest()
-    print("Manifest wurde erstellt: manifest.txt (überschrieben falls vorhanden)")
