@@ -39,7 +39,7 @@ def combine_yml_files(output_file, search_directory):
                         outfile.write(content + '\n')
                         logger.info(f"Inhalt von {file_path} hinzugefügt.")
 
-if __name__ == "__main__":
+def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))  # Verzeichnis des Skripts
     search_directory = script_dir  # Durchsuche das Verzeichnis des Skripts rekursiv
     parent_folder_name = os.path.basename(script_dir)
@@ -53,3 +53,6 @@ if __name__ == "__main__":
         logger.exception("Fehlgeschlagen: Verzeichnis nicht gefunden.")
     except Exception as e:
         logger.exception(f"Unerwarteter Fehler: {e}")
+
+if __name__ == "__main__":
+    main()
