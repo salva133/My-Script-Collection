@@ -40,10 +40,13 @@ def combine_txt_files(output_file):
                         outfile.write('\n')  # Optional: Fügt eine neue Zeile zwischen Dateien hinzu
                         logger.debug(f"Wrote content of file: {file_path} to output file")
 
-if __name__ == "__main__":
+def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))  # Verzeichnis des Skripts
     parent_folder_name = os.path.basename(script_dir)  # Name des übergeordneten Verzeichnisses
     output_file = os.path.join(script_dir, f'{parent_folder_name}.txt')  # Ausgabedatei mit dem Namen des übergeordneten Verzeichnisses
     logger.info("Starting file combination process")
     combine_txt_files(output_file)
     logger.info(f'All .txt files have been combined into {output_file}')
+
+if __name__ == "__main__":
+    main()
