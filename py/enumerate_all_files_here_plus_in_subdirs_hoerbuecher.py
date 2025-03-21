@@ -150,7 +150,7 @@ def process_directory(directory: Path):
             except Exception as e:
                 logger.exception(f"Error processing subdirectory {subdir}: {e}")
 
-if __name__ == "__main__":
+def main():
     """
     Entry point of the script. Begins processing from the current working directory.
     """
@@ -160,3 +160,6 @@ if __name__ == "__main__":
         process_directory(cwd)
     except Exception as e:
         logger.exception(f"Error in main execution: {e}")
+
+if __name__ == "__main__":
+    main()
