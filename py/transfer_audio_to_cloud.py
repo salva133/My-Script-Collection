@@ -5,8 +5,8 @@ import zipfile
 import logging
 
 debug = True
-ziel_verzeichnis = "E:\\Music & Stuff\\FL Studio"
-backup_verzeichnis = "E:\\Music & Stuff\\FL Studio Backup"
+ziel_verzeichnis = r"F:\Media\Music & Stuff\FL Studio"
+backup_verzeichnis = r"F:\Media\Music & Stuff\FL Studio Backup"
 file_extensions = ('.mp3', '.wav', '.flac')
 
 logging.basicConfig(level=logging.DEBUG, # Logger Config
