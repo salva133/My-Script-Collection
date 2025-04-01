@@ -15,14 +15,32 @@ def replace_umlauts(text):
     return text
 
 def process_filename(filename):
-    filename = replace_umlauts(filename)
-    filename = re.sub(paren_pattern, '', filename)  # Removes only specific bracket content
-    return re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', 
-                  re.sub(r'\s+', ' ', 
-                         pattern.sub('', filename.replace("4K", "").replace("ASMR", ""))
-                        ).strip())
+    # Teile den Dateinamen in Basisname und Endung
+    name, ext = os.path.splitext(filename)
+    
+    # Ersetze Umlaute im Basisnamen
+    name = replace_umlauts(name)
 
-# Function to traverse directories, including subdirectories
+    # Entferne Substrings, die dem Muster (.*p_.*fps_.*-.*kbit_.*) entsprechen
+    name = re.sub(r'\(.*p_.*fps_.*-.*kbit_.*?\)', '', name)
+
+    # Entferne weitere spezifizierte Klammerinhalte
+    name = re.sub(paren_pattern, '', name)
+
+    # Entferne unerwünschte Sonderzeichen sowie "4K" und "ASMR", normalisiere Leerzeichen und trimme
+    cleaned = re.sub(r'\s+', ' ',
+                     pattern.sub('', name.replace("4K", "").replace("ASMR", ""))
+                     ).strip()
+
+    # Füge Leerzeichen zwischen Kleinbuchstaben und direkt folgendem Großbuchstaben ein (CamelCase)
+    cleaned = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', cleaned)
+
+    # Letztes Trimming, um restliche Leerzeichen zu entfernen
+    cleaned = cleaned.strip()
+    
+    # Füge den bereinigten Basisnamen mit der originalen Endung (ebenfalls getrimmt) zusammen
+    return cleaned + ext.strip()
+
 def rename_files_in_directory(directory):
     for root, dirs, files in os.walk(directory):
         for filename in files:
@@ -38,12 +56,16 @@ def rename_files_in_directory(directory):
                 os.rename(old_file_path, new_file_path)
                 print(f"Renamed: {old_file_path} -> {new_file_path}")
 
-# Start the process in the current directory (including subdirectories)
-try:
-    cwd = os.getcwd()
-    rename_files_in_directory(cwd)
-    print("Done!")
-except Exception as e:
-    print(f"An error occurred: {e}")
-finally:
-    input("Program finished.")
+def main():
+    # Start the process in the current directory (including subdirectories)
+    try:
+        cwd = os.getcwd()
+        rename_files_in_directory(cwd)
+        print("Done!")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    # finally:
+    #     input("Program finished.")
+
+if __name__ == "__main__":
+    main()
