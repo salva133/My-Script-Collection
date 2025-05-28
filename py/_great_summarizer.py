@@ -1,6 +1,6 @@
 import os
 
-abs_path = r"C:\Users\Tony\Desktop"
+abs_path = r"C:\Users\Asus\Desktop"
 output_file = os.path.join(abs_path, "Script_Collection.txt")
 
 def main():
