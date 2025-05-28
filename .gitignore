@@ -4,3 +4,4 @@ __pycache__
 *.key
 *.enc
 py/key_manager.py
+*venv*
