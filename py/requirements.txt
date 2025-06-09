@@ -1,0 +1,10 @@
+ffmpeg
+pydub
+pillow
+weasyprint
+imageio
+PyYAML
+mutagen
+cryptography
+bs4
+pymongo
