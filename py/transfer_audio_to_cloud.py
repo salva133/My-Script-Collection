@@ -5,29 +5,41 @@ import zipfile
 import logging
 
 debug = True
-ziel_verzeichnis = r"F:\Media\Music & Stuff\FL Studio"
-backup_verzeichnis = r"F:\Media\Music & Stuff\FL Studio Backup"
-file_extensions = ('.mp3', '.wav', '.flac')
+quell_verzeichnis = r"C:\Users\Asus\Documents\Image-Line\FL Studio\Projects"
+ziel_verzeichnis = r"C:\Users\Asus\Proton Drive\hans.rudi.giger\My files\FL Studio Tracks"
+backup_verzeichnis = r"C:\Users\Asus\Proton Drive\hans.rudi.giger\My files\FL Studio Tracks Backup"
+file_extensions = ('.mp3', '.wav')
 
 logging.basicConfig(level=logging.DEBUG, # Logger Config
                     format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-''' Muss noch überarbeitet werden
 def erstelle_backup(ziel):
     try:
-        backup_name = os.path.join(backup_verzeichnis, 'FL_Studio_Backup.zip')
+        os.makedirs(backup_verzeichnis, exist_ok=True)
+        ordnername = os.path.basename(os.path.normpath(ziel))
+        backup_name = os.path.join(
+            backup_verzeichnis,
+            f"{ordnername}-Backup.zip"
+        )
         with zipfile.ZipFile(backup_name, 'w') as backup_zip:
             for root, dirs, files in os.walk(ziel):
                 for file in files:
-                    backup_zip.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), os.path.join(ziel, '..')))
+                    backup_zip.write(
+                        os.path.join(root, file),
+                        os.path.relpath(os.path.join(root, file), ziel)
+                    )
         logger.debug(f"Backup erstellt unter: {backup_name}")
     except Exception as e:
         logger.exception(f"Fehler beim Erstellen des Backups: {e}")
-'''
 
-def stelle_backup_wieder_her(backup_pfad, ziel):
+def stelle_backup_wieder_her_fuer_ziel(ziel):
     try:
+        ordnername = os.path.basename(os.path.normpath(ziel))
+        backup_pfad = os.path.join(backup_verzeichnis, f"{ordnername}-Backup.zip")
+        if not os.path.exists(backup_pfad):
+            logger.error(f"Kein Backup gefunden unter: {backup_pfad}")
+            return
         with zipfile.ZipFile(backup_pfad, 'r') as file:
             file.extractall(ziel)
         logger.debug(f"Backup wiederhergestellt von: {backup_pfad}")
@@ -39,7 +51,7 @@ def erstelle_verzeichnis(verzeichnis):
         if os.path.exists(verzeichnis):
             if os.listdir(verzeichnis):
                 logger.debug(f"Verzeichnis existiert und ist nicht leer: {verzeichnis}")
-                # erstelle_backup(verzeichnis) ### Wurde deaktiviert
+                erstelle_backup(verzeichnis)
                 for filename in os.listdir(verzeichnis):
                     file_path = os.path.join(verzeichnis, filename)
                     if os.path.isfile(file_path) or os.path.islink(file_path):
@@ -78,12 +90,12 @@ def kopiere_audiodateien(cwd, ziel):
 def main():
     try:
         erstelle_verzeichnis(ziel_verzeichnis)
-        kopiere_audiodateien(os.getcwd(), ziel_verzeichnis)
+        kopiere_audiodateien(quell_verzeichnis, ziel_verzeichnis)
         logger.debug("Kopieroperation abgeschlossen.")
     except Exception as e:
         logger.exception(f'Fehler beim Kopiervorgang: {e}')
         logger.exception('Stelle ursprünglichen Zustand aus Backup wieder her...')
-        stelle_backup_wieder_her(os.path.join(backup_verzeichnis, 'FL_Studio_Backup.zip'), ziel_verzeichnis)
+        stelle_backup_wieder_her_fuer_ziel(ziel_verzeichnis)
         logger.exception('Wiederherstellung abgeschlossen.')
 
 if __name__ == "__main__":
