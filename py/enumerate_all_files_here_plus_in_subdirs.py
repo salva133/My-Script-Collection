@@ -4,7 +4,7 @@ import re
 from mutagen.easyid3 import EasyID3
 from mutagen.id3 import ID3NoHeaderError
 import logging
-from create_manifest import create_manifest
+# from create_manifest import create_manifest
 
 FORCE_CHANGE = False  # Global variable to force renaming and metadata update regardless of current state
 ARTIST = "Witch Doctor Larry"
@@ -156,7 +156,7 @@ def main():
         cwd = Path(os.getcwd())
         logger.info(f"Starting processing in directory: {cwd}")
         process_directory(cwd)
-        create_manifest()
+        # create_manifest()
     except Exception as e:
         logger.exception(f"Error in main execution: {e}")
 
