@@ -6,16 +6,15 @@ import logging
 import hashlib
 
 debug = True
-quell_verzeichnis = r"C:\Users\Asus\Documents\Image-Line\FL Studio\Projects"
-ziel_verzeichnis = r"C:\Users\Asus\Proton Drive\hans.rudi.giger\My files\FL Studio Tracks"
-backup_verzeichnis = r"C:\Users\Asus\Proton Drive\hans.rudi.giger\My files\FL Studio Tracks Backup"
+source_dir = r"C:\Users\Asus\Documents\Image-Line\FL Studio\Projects"
+target_dir = r"C:\Users\Asus\Proton Drive\hans.rudi.giger\My files\FL Studio Tracks"
+backup_dir = r"C:\Users\Asus\Proton Drive\hans.rudi.giger\My files\FL Studio Tracks Backup"
 file_extensions = ('.mp3', '.wav')
 
-logging.basicConfig(level=logging.DEBUG, # Logger Config
+logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-def erstelle_backup(ziel):
 def files_are_identical(file1, file2):
     if not os.path.exists(file2):
         return False
@@ -31,91 +30,91 @@ def files_are_identical(file1, file2):
 
 def create_backup(target):
     try:
-        os.makedirs(backup_verzeichnis, exist_ok=True)
-        ordnername = os.path.basename(os.path.normpath(ziel))
+        os.makedirs(backup_dir, exist_ok=True)
+        folder_name = os.path.basename(os.path.normpath(target))
         backup_name = os.path.join(
-            backup_verzeichnis,
-            f"{ordnername}-Backup.zip"
+            backup_dir,
+            f"{folder_name}-Backup.zip"
         )
         with zipfile.ZipFile(backup_name, 'w') as backup_zip:
-            for root, dirs, files in os.walk(ziel):
+            for root, dirs, files in os.walk(target):
                 for file in files:
                     backup_zip.write(
                         os.path.join(root, file),
-                        os.path.relpath(os.path.join(root, file), ziel)
+                        os.path.relpath(os.path.join(root, file), target)
                     )
-        logger.debug(f"Backup erstellt unter: {backup_name}")
+        logger.debug(f"Backup created at: {backup_name}")
     except Exception as e:
-        logger.exception(f"Fehler beim Erstellen des Backups: {e}")
+        logger.exception(f"Error creating backup: {e}")
 
-def stelle_backup_wieder_her_fuer_ziel(ziel):
+def restore_backup_for_target(target):
     try:
-        ordnername = os.path.basename(os.path.normpath(ziel))
-        backup_pfad = os.path.join(backup_verzeichnis, f"{ordnername}-Backup.zip")
-        if not os.path.exists(backup_pfad):
-            logger.error(f"Kein Backup gefunden unter: {backup_pfad}")
+        folder_name = os.path.basename(os.path.normpath(target))
+        backup_path = os.path.join(backup_dir, f"{folder_name}-Backup.zip")
+        if not os.path.exists(backup_path):
+            logger.error(f"No backup found at: {backup_path}")
             return
-        with zipfile.ZipFile(backup_pfad, 'r') as file:
-            file.extractall(ziel)
-        logger.debug(f"Backup wiederhergestellt von: {backup_pfad}")
+        with zipfile.ZipFile(backup_path, 'r') as file:
+            file.extractall(target)
+        logger.debug(f"Backup restored from: {backup_path}")
     except Exception as e:
-        logger.exception(f"Fehler beim Wiederherstellen des Backups: {e}")
+        logger.exception(f"Error restoring backup: {e}")
 
-def erstelle_verzeichnis(verzeichnis):
+def create_directory(directory):
     try:
-        if os.path.exists(verzeichnis):
-            if os.listdir(verzeichnis):
-                logger.debug(f"Verzeichnis existiert und ist nicht leer: {verzeichnis}")
-                erstelle_backup(verzeichnis)
-                for filename in os.listdir(verzeichnis):
-                    file_path = os.path.join(verzeichnis, filename)
+        if os.path.exists(directory):
+            if os.listdir(directory):
+                logger.debug(f"Directory exists and is not empty: {directory}")
+                create_backup(directory)
+                for filename in os.listdir(directory):
+                    file_path = os.path.join(directory, filename)
                     if os.path.isfile(file_path) or os.path.islink(file_path):
                         os.unlink(file_path)
                     elif os.path.isdir(file_path):
                         shutil.rmtree(file_path)
-                logger.debug(f"Inhalt von {verzeichnis} gelöscht")
+                logger.debug(f"Contents of {directory} deleted")
             else:
-                logger.debug(f"Verzeichnis existiert, ist aber leer: {verzeichnis}")
+                logger.debug(f"Directory exists but is empty: {directory}")
         else:
-            os.makedirs(verzeichnis)
-            logger.debug(f"Verzeichnis erstellt: {verzeichnis}")
+            os.makedirs(directory)
+            logger.debug(f"Directory created: {directory}")
     except Exception as e:
-        logger.exception("Auf das Verzeichnis konnte nicht zugegriffen werden. Ist die Platte vielleicht noch gesperrt?")
-        logger.exception(f"Fehler: {e}")
+        logger.exception("Could not access directory. Is the drive still locked?")
+        logger.exception(f"Error: {e}")
         time.sleep(5)
         exit()
 
-def kopiere_audiodateien(cwd, ziel):
+def copy_audio_files(src, target):
     try:
-        for root, dirs, files in os.walk(cwd):
+        for root, dirs, files in os.walk(src):
             for file in files:
                 if file.endswith(file_extensions):
                     source_path = os.path.join(root, file)
-                    destination_path = os.path.join(ziel, file)
+                    destination_path = os.path.join(target, file)
                     try:
                         if os.path.exists(destination_path):
                             if files_are_identical(source_path, destination_path):
                                 logger.debug(f"Skipped (identical): {source_path} -> {destination_path}")
                                 continue  # Skip identical file
                         shutil.copy(source_path, destination_path)
-                        logger.debug(f"Kopiert: {source_path} -> {destination_path}")
+                        logger.debug(f"Copied: {source_path} -> {destination_path}")
                     except Exception as e:
-                        logger.exception(f"Fehler beim Kopieren der Datei {file}. Grund: {e}")
+                        logger.exception(f"Error copying file {file}. Reason: {e}")
                         raise
     except Exception as e:
-        logger.exception(f"Ein Fehler trat auf während des Kopierprozesses: {e}")
+        logger.exception(f"An error occurred during the copy process: {e}")
         raise
 
 def main():
     try:
-        erstelle_verzeichnis(ziel_verzeichnis)
-        kopiere_audiodateien(quell_verzeichnis, ziel_verzeichnis)
-        logger.debug("Kopieroperation abgeschlossen.")
+        create_directory(target_dir)
+        copy_audio_files(source_dir, target_dir)
+        logger.debug("Copy operation finished.")
     except Exception as e:
-        logger.exception(f'Fehler beim Kopiervorgang: {e}')
-        logger.exception('Stelle ursprünglichen Zustand aus Backup wieder her...')
-        stelle_backup_wieder_her_fuer_ziel(ziel_verzeichnis)
-        logger.exception('Wiederherstellung abgeschlossen.')
+        logger.exception(f'Error during copy operation: {e}')
+        logger.exception('Restoring original state from backup...')
+        restore_backup_for_target(target_dir)
+        logger.exception('Restore completed.')
 
 if __name__ == "__main__":
     main()
