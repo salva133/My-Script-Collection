@@ -3,6 +3,7 @@ import shutil
 import time
 import zipfile
 import logging
+import hashlib
 
 debug = True
 quell_verzeichnis = r"C:\Users\Asus\Documents\Image-Line\FL Studio\Projects"
@@ -15,6 +16,20 @@ logging.basicConfig(level=logging.DEBUG, # Logger Config
 logger = logging.getLogger(__name__)
 
 def erstelle_backup(ziel):
+def files_are_identical(file1, file2):
+    if not os.path.exists(file2):
+        return False
+    if os.path.getsize(file1) != os.path.getsize(file2):
+        return False
+    def get_hash(path):
+        hash_obj = hashlib.sha256()
+        with open(path, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                hash_obj.update(chunk)
+        return hash_obj.hexdigest()
+    return get_hash(file1) == get_hash(file2)
+
+def create_backup(target):
     try:
         os.makedirs(backup_verzeichnis, exist_ok=True)
         ordnername = os.path.basename(os.path.normpath(ziel))
@@ -78,6 +93,10 @@ def kopiere_audiodateien(cwd, ziel):
                     source_path = os.path.join(root, file)
                     destination_path = os.path.join(ziel, file)
                     try:
+                        if os.path.exists(destination_path):
+                            if files_are_identical(source_path, destination_path):
+                                logger.debug(f"Skipped (identical): {source_path} -> {destination_path}")
+                                continue  # Skip identical file
                         shutil.copy(source_path, destination_path)
                         logger.debug(f"Kopiert: {source_path} -> {destination_path}")
                     except Exception as e:
