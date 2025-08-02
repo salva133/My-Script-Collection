@@ -11,7 +11,7 @@ target_dir = r"C:\Users\Asus\Proton Drive\hans.rudi.giger\My files\FL Studio Tra
 backup_dir = r"C:\Users\Asus\Proton Drive\hans.rudi.giger\My files\FL Studio Tracks Backup"
 file_extensions = ('.mp3', '.wav')
 
-logging.basicConfig(level=logging.DEBUG,
+logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
@@ -43,7 +43,7 @@ def create_backup(target):
                         os.path.join(root, file),
                         os.path.relpath(os.path.join(root, file), target)
                     )
-        logger.debug(f"Backup created at: {backup_name}")
+        logger.info(f"Backup created at: {backup_name}")
     except Exception as e:
         logger.exception(f"Error creating backup: {e}")
 
@@ -52,11 +52,11 @@ def restore_backup_for_target(target):
         folder_name = os.path.basename(os.path.normpath(target))
         backup_path = os.path.join(backup_dir, f"{folder_name}-Backup.zip")
         if not os.path.exists(backup_path):
-            logger.error(f"No backup found at: {backup_path}")
+            logger.warning(f"No backup found at: {backup_path}")
             return
         with zipfile.ZipFile(backup_path, 'r') as file:
             file.extractall(target)
-        logger.debug(f"Backup restored from: {backup_path}")
+        logger.info(f"Backup restored from: {backup_path}")
     except Exception as e:
         logger.exception(f"Error restoring backup: {e}")
 
@@ -64,7 +64,7 @@ def create_directory(directory):
     try:
         if os.path.exists(directory):
             if os.listdir(directory):
-                logger.debug(f"Directory exists and is not empty: {directory}")
+                logger.warning(f"Directory exists and is not empty: {directory}")
                 create_backup(directory)
                 for filename in os.listdir(directory):
                     file_path = os.path.join(directory, filename)
@@ -72,12 +72,12 @@ def create_directory(directory):
                         os.unlink(file_path)
                     elif os.path.isdir(file_path):
                         shutil.rmtree(file_path)
-                logger.debug(f"Contents of {directory} deleted")
+                logger.info(f"Contents of {directory} deleted")
             else:
-                logger.debug(f"Directory exists but is empty: {directory}")
+                logger.info(f"Directory exists but is empty: {directory}")
         else:
             os.makedirs(directory)
-            logger.debug(f"Directory created: {directory}")
+            logger.info(f"Directory created: {directory}")
     except Exception as e:
         logger.exception("Could not access directory. Is the drive still locked?")
         logger.exception(f"Error: {e}")
@@ -109,7 +109,7 @@ def main():
     try:
         create_directory(target_dir)
         copy_audio_files(source_dir, target_dir)
-        logger.debug("Copy operation finished.")
+        logger.info("Copy operation finished.")
     except Exception as e:
         logger.exception(f'Error during copy operation: {e}')
         logger.exception('Restoring original state from backup...')
