@@ -9,7 +9,7 @@ import logging
 FORCE_CHANGE = False  # Global variable to force renaming and metadata update regardless of current state
 ARTIST = "Witch Doctor Larry"
 
-logging.basicConfig(level=logging.INFO, # Logger Config
+logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
@@ -88,7 +88,7 @@ def rename_files_in_directory(directory: Path):
                 continue
             
             new_path = directory / new_name
-            logger.info(f"Renaming: {file.name} -> {new_name}")
+            logger.debug(f"Renaming: {file.name} -> {new_name}")
             file.rename(new_path)
             add_metadata(new_path, directory.name)
         except Exception as e:
@@ -131,7 +131,7 @@ def add_metadata(file, album_name):
         audio["artist"] = ARTIST
         audio["album"] = album_name
         audio.save(file)
-        logger.info(f"Metadata saved for {file}")
+        logger.debug(f"Metadata saved for {file}")
     except Exception as e:
         logger.exception(f"Error adding metadata to {file}: {e}")
 

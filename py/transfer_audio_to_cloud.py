@@ -9,13 +9,14 @@ debug = True
 source_dir = r"C:\Users\Asus\Documents\Image-Line\FL Studio\Projects"
 target_dir = r"C:\Users\Asus\Proton Drive\hans.rudi.giger\My files\FL Studio Tracks"
 backup_dir = r"C:\Users\Asus\Proton Drive\hans.rudi.giger\My files\FL Studio Tracks Backup"
-file_extensions = ('.mp3', '.wav')
+file_extensions = ('.mp3')
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 def files_are_identical(file1, file2):
+    logger.debug("Starting Integrity Check...")
     if not os.path.exists(file2):
         return False
     if os.path.getsize(file1) != os.path.getsize(file2):
@@ -30,6 +31,7 @@ def files_are_identical(file1, file2):
 
 def create_backup(target):
     try:
+        logger.debug("Creating Backup...")
         os.makedirs(backup_dir, exist_ok=True)
         folder_name = os.path.basename(os.path.normpath(target))
         backup_name = os.path.join(
@@ -49,6 +51,7 @@ def create_backup(target):
 
 def restore_backup_for_target(target):
     try:
+        logger.debug("Restoring Backup for Target Dir...")
         folder_name = os.path.basename(os.path.normpath(target))
         backup_path = os.path.join(backup_dir, f"{folder_name}-Backup.zip")
         if not os.path.exists(backup_path):
@@ -62,10 +65,11 @@ def restore_backup_for_target(target):
 
 def create_directory(directory):
     try:
+        logger.debug("Creating Directory...")
         if os.path.exists(directory):
             if os.listdir(directory):
                 logger.warning(f"Directory exists and is not empty: {directory}")
-                create_backup(directory)
+                # create_backup(directory)
                 for filename in os.listdir(directory):
                     file_path = os.path.join(directory, filename)
                     if os.path.isfile(file_path) or os.path.islink(file_path):
@@ -86,6 +90,7 @@ def create_directory(directory):
 
 def copy_audio_files(src, target):
     try:
+        logger.debug("Copying Audio Files...")
         for root, dirs, files in os.walk(src):
             for file in files:
                 if file.endswith(file_extensions):
