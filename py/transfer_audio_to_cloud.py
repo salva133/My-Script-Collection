@@ -92,7 +92,7 @@ def copy_audio_files(src, target):
     try:
         logger.debug("Copying Audio Files...")
         for root, dirs, files in os.walk(src):
-            if "Ressourcen" in root.lower():
+            if "ressourcen" in root.lower():
                 logger.debug(f"Überspringe Ressourcen-Verzeichnis: {root}")
                 continue
             for file in files:
