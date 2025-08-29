@@ -1,12 +1,11 @@
 import os
 import logging
+import json
 
-# Logger Konfiguration
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 def read_file(file_path):
-    """Liest eine Datei mit verschiedenen Encodings und gibt den Inhalt zurück."""
     encodings = ['utf-8', 'utf-8-sig', 'latin-1', 'iso-8859-1']
     for encoding in encodings:
         try:
@@ -21,8 +20,24 @@ def read_file(file_path):
             return None
     return None
 
+def find_and_read_version(start_dir):
+    for root, dirs, files in os.walk(start_dir):
+        if 'metadata.json' in files:
+            metadata_path = os.path.join(root, 'metadata.json')
+            try:
+                with open(metadata_path, 'r', encoding='utf-8') as meta_file:
+                    metadata = json.load(meta_file)
+                    version = metadata.get('version')
+                    if version:
+                        logger.info(f"Gefundene Version: {version} in {metadata_path}")
+                        return version
+            except Exception as e:
+                logger.error(f"Fehler beim Lesen der metadata.json: {e}")
+                continue
+    logger.error("Keine metadata.json mit 'version' gefunden.")
+    return None
+
 def combine_yml_files(output_file, search_directory):
-    """Durchläuft rekursiv ./localization/english und kombiniert .yml-Dateien aus allen Unterordnern, aber ignoriert scripts.txt und localizations.txt."""
     if not os.path.exists(search_directory):
         logger.error(f"Das Verzeichnis '{search_directory}' existiert nicht!")
         raise FileNotFoundError(f"Das Verzeichnis '{search_directory}' existiert nicht.")
@@ -43,8 +58,12 @@ def combine_yml_files(output_file, search_directory):
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     search_directory = os.path.join(script_dir, "localization", "english")
-    output_file = os.path.join(script_dir, "localizations.txt")  # <- Hartkodierter Output-Dateiname
-    
+    version = find_and_read_version(script_dir)
+    if not version:
+        logger.error("Abbruch: Keine gültige Version gefunden.")
+        return
+    output_file = os.path.join(script_dir, f"localizations_{version}.txt")
+
     try:
         logger.info(f"Starte das Zusammenführen von .yml-Dateien in {search_directory}")
         combine_yml_files(output_file, search_directory)

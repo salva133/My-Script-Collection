@@ -1,7 +1,8 @@
 import os
 import logging
+import json
 
-logging.basicConfig(level=logging.INFO, # Logger Config
+logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
@@ -19,6 +20,23 @@ def read_file(file_path):
     logger.debug(f"Failed to read file: {file_path} with any known encoding")
     return None
 
+def find_and_read_version(start_dir):
+    for root, dirs, files in os.walk(start_dir):
+        if 'metadata.json' in files:
+            metadata_path = os.path.join(root, 'metadata.json')
+            try:
+                with open(metadata_path, 'r', encoding='utf-8') as meta_file:
+                    metadata = json.load(meta_file)
+                    version = metadata.get('version')
+                    if version:
+                        logger.info(f"Gefundene Version: {version} in {metadata_path}")
+                        return version
+            except Exception as e:
+                logger.error(f"Fehler beim Lesen der metadata.json: {e}")
+                continue
+    logger.error("Keine metadata.json mit 'version' gefunden.")
+    return None
+
 def combine_txt_files(output_file):
     script_dir = os.path.dirname(os.path.abspath(__file__))
     logger.debug(f"Script directory: {script_dir}")
@@ -29,7 +47,6 @@ def combine_txt_files(output_file):
     with open(output_file, 'w', encoding='utf-8-sig') as outfile:
         logger.debug(f"Opened output file: {output_file}")
         for root, dirs, files in os.walk(script_dir):
-            # Verzeichnisse, die mit . beginnen, aus dirs entfernen (werden dann auch nicht weiter besucht)
             dirs[:] = [d for d in dirs if not d.startswith('.')]
             logger.debug(f"Walking directory: {root}")
             for file in files:
@@ -48,10 +65,14 @@ def combine_txt_files(output_file):
 
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    output_file = os.path.join(script_dir, 'scripts.txt')  # Hartkodiert
-    logger.info("Starting file combination process")
+    version = find_and_read_version(script_dir)
+    if not version:
+        logger.error("Abbruch: Keine gültige Version gefunden.")
+        return
+    output_file = os.path.join(script_dir, f'scripts_{version}.txt')
+    logger.info("Starte das Kombinieren der TXT-Dateien")
     combine_txt_files(output_file)
-    logger.info(f'All .txt files have been combined into {output_file}')
+    logger.info(f'Alle .txt Dateien wurden in {output_file} kombiniert.')
 
 if __name__ == "__main__":
     main()
