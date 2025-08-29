@@ -24,7 +24,7 @@ def combine_txt_files(output_file):
     logger.debug(f"Script directory: {script_dir}")
     logger.debug(f"Output file: {output_file}")
 
-    skip_files = {'scripts.txt', 'localizations.txt'}
+    skip_files = {'scripts.txt', 'localizations.txt', 'steam_desc.txt'}
 
     with open(output_file, 'w', encoding='utf-8-sig') as outfile:
         logger.debug(f"Opened output file: {output_file}")
