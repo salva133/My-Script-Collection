@@ -2,8 +2,7 @@ import os
 import logging
 import json
 
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 def read_file(file_path):
@@ -15,7 +14,7 @@ def read_file(file_path):
                 logger.debug(f"Successfully read file with encoding: {encoding}")
                 return file.read()
         except UnicodeDecodeError:
-            logger.exception(f"Failed to read file with encoding: {encoding}")
+            logger.error(f"Failed to read file with encoding: {encoding}")
             continue
     logger.debug(f"Failed to read file: {file_path} with any known encoding")
     return None
@@ -32,7 +31,7 @@ def find_and_read_version(start_dir):
                         logger.info(f"Gefundene Version: {version} in {metadata_path}")
                         return version
             except Exception as e:
-                logger.error(f"Fehler beim Lesen der metadata.json: {e}")
+                logger.exception(f"Fehler beim Lesen der metadata.json: {e}")
                 continue
     logger.error("Keine metadata.json mit 'version' gefunden.")
     return None
@@ -61,7 +60,7 @@ def combine_txt_files(output_file):
                         outfile.write(f'Filename: {file}\n')
                         outfile.write(content)
                         outfile.write('\n')
-                        logger.debug(f"Wrote content of file: {file_path} to output file")
+                        logger.info(f"Wrote content of file: {file_path} to output file")
 
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))

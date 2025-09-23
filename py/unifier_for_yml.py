@@ -6,6 +6,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 def read_file(file_path):
+    logger.debug(f"Reading file: {file_path}")
     encodings = ['utf-8', 'utf-8-sig', 'latin-1', 'iso-8859-1']
     for encoding in encodings:
         try:
@@ -13,10 +14,10 @@ def read_file(file_path):
                 logger.debug(f"Erfolgreich gelesen: {file_path} mit Encoding {encoding}")
                 return file.read()
         except UnicodeDecodeError:
-            logger.warning(f"Fehlgeschlagenes Encoding für Datei {file_path}: {encoding}")
+            logger.error(f"Fehlgeschlagenes Encoding für Datei {file_path}: {encoding}")
             continue
         except Exception as e:
-            logger.error(f"Fehler beim Lesen von {file_path}: {e}")
+            logger.exception(f"Fehler beim Lesen von {file_path}: {e}")
             return None
     return None
 
@@ -32,7 +33,7 @@ def find_and_read_version(start_dir):
                         logger.info(f"Gefundene Version: {version} in {metadata_path}")
                         return version
             except Exception as e:
-                logger.error(f"Fehler beim Lesen der metadata.json: {e}")
+                logger.exception(f"Fehler beim Lesen der metadata.json: {e}")
                 continue
     logger.error("Keine metadata.json mit 'version' gefunden.")
     return None
@@ -69,7 +70,7 @@ def main():
         combine_yml_files(output_file, search_directory)
         logger.info(f"Alle .yml-Dateien wurden in {output_file} kombiniert.")
     except FileNotFoundError:
-        logger.exception("Fehlgeschlagen: Verzeichnis nicht gefunden.")
+        logger.error("Fehlgeschlagen: Verzeichnis nicht gefunden.")
     except Exception as e:
         logger.exception(f"Unerwarteter Fehler: {e}")
 
