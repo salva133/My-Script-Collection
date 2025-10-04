@@ -5,3 +5,4 @@ __pycache__
 *.key
 *.enc
 *venv*
+*vic3modding*
