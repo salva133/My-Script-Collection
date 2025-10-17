@@ -73,7 +73,7 @@ def rename_files_in_directory(directory: Path):
     logger.info(f"Starting processing of directory: {directory}")
     files = get_files_to_rename(directory)
     cleaned_files = [(file, remove_existing_number(file.name)) for file in files]
-    cleaned_files.sort(key=lambda x: x[0].stat().st_ctime, reverse=True)
+    cleaned_files.sort(key=lambda x: x[0].stat().st_mtime, reverse=True)
     
     num_digits = len(str(len(cleaned_files)))
     
