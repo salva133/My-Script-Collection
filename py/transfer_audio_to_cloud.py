@@ -102,10 +102,16 @@ def copy_audio_files(src, target):
                     try:
                         if os.path.exists(destination_path):
                             if files_are_identical(source_path, destination_path):
-                                logger.debug(f"Skipped (identical): {source_path} -> {destination_path}")
-                                continue  # Skip identical file
-                        shutil.copy(source_path, destination_path)
-                        logger.debug(f"Copied: {source_path} -> {destination_path}")
+                                src_mtime = os.path.getmtime(source_path)
+                                dst_atime = os.path.getatime(destination_path)
+                                os.utime(destination_path, (dst_atime, src_mtime))
+                                logger.debug(f"Skipped (identical) + mtime synced: {source_path} -> {destination_path}")
+                                continue
+                        shutil.copy2(source_path, destination_path)
+                        src_mtime = os.path.getmtime(source_path)
+                        dst_atime = os.path.getatime(destination_path)
+                        os.utime(destination_path, (dst_atime, src_mtime))
+                        logger.debug(f"Copied (with mtime): {source_path} -> {destination_path}")
                     except Exception as e:
                         logger.exception(f"Error copying file {file}. Reason: {e}")
                         raise
